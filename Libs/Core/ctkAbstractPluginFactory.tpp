@@ -52,8 +52,20 @@ bool ctkFactoryPluginItem<BaseClassType>::load()
 //----------------------------------------------------------------------------
 template<typename BaseClassType>
 QString ctkFactoryPluginItem<BaseClassType>::loadErrorString()const
-{ 
+{
   return this->Loader.errorString();
+}
+
+//----------------------------------------------------------------------------
+template<typename BaseClassType>
+void ctkFactoryPluginItem<BaseClassType>::uninstantiate()
+{
+  if (!this->Instance)
+    {
+    return;
+    }
+  this->Instance->deleteLater();
+  this->Instance = 0;
 }
 
 //----------------------------------------------------------------------------
