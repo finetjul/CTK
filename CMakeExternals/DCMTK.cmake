@@ -48,6 +48,7 @@ if(${add_project})
       UPDATE_COMMAND ""
       BUILD_COMMAND ""
       CMAKE_CACHE_ARGS
+        -DBUILD_SHARED_LIBS:BOOL=ON
         -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
         -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
         -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
