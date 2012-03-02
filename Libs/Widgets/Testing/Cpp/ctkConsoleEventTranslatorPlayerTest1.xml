@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<xml>
+    <events>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0/qt_scrollarea_viewport" command="mousePress" arguments="1,1,0,90,81"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0/qt_scrollarea_viewport" command="mouseMove" arguments="1,0,0,91,77"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0/qt_scrollarea_viewport" command="mouseRelease" arguments="1,0,0,91,77"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777248"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Te"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="32"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test f"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test fun"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test func"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test funct"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test functi"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test functio"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="32"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function re"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function re"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function rec"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function reco"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function recor"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function record"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="46"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777220"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777248"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function record.&#10;$ H"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function record.&#10;$ He"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function record.&#10;$ Hey"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="32"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function record.&#10;$ Hey y"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function record.&#10;$ Hey you"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="set_string" arguments="Test function record.&#10;$ Hey you"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777220"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777219"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777220"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777220"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777219"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/1ctkConsole0/1ctkConsolePrivate0" command="key" arguments="16777219"/>
+    </events>
+</xml>

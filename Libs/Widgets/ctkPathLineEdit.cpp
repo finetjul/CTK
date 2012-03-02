@@ -338,6 +338,12 @@ void ctkPathLineEdit::setCurrentFileExtension(const QString& extension)
   this->setCurrentPath(filename);
 }
 
+QComboBox* ctkPathLineEdit::comboBox() const
+{
+  Q_D(const ctkPathLineEdit);
+  return d->ComboBox;
+}
+
 //------------------------------------------------------------------------------
 QString ctkPathLineEdit::currentPath()const
 {
@@ -370,10 +376,12 @@ void ctkPathLineEdit::updateHasValidInput()
     QFileInfo fileInfo(d->ComboBox->currentText());
     ctkPathLineEditPrivate::sCurrentDirectory =
       fileInfo.isFile() ? fileInfo.absolutePath() : fileInfo.absoluteFilePath();
+    qDebug() << "emit currentPathChanged()";
     emit currentPathChanged(d->ComboBox->currentText());
     }
   if ( d->HasValidInput != oldHasValidInput)
     {
+    qDebug() << "emit validInputChanged()";
     emit validInputChanged(d->HasValidInput);
     }
 }

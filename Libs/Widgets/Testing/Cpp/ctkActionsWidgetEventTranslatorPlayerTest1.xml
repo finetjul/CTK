@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<xml>
+    <events>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="setCurrent" arguments="0.0.2.0"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="setCurrent" arguments="0.0.1.0"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="setCurrent" arguments="0.0.0.0"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0/qt_scrollarea_hcontainer/1QScrollBar0" command="mousePress" arguments="1,1,0,81,4"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0/qt_scrollarea_hcontainer/1QScrollBar0" command="mouseMove" arguments="1,0,0,172,11"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0/qt_scrollarea_hcontainer/1QScrollBar0" command="mouseRelease" arguments="1,0,0,172,11"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="setCurrent" arguments="0.0.1.2"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="setCurrent" arguments="0.0.2.2"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0/qt_scrollarea_hcontainer/1QScrollBar0" command="mousePress" arguments="1,1,0,148,8"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0/qt_scrollarea_hcontainer/1QScrollBar0" command="mouseMove" arguments="1,0,0,57,11"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0/qt_scrollarea_hcontainer/1QScrollBar0" command="mouseRelease" arguments="1,0,0,57,11"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="collapse" arguments="0.0"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="expand" arguments="0.0"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="setCurrent" arguments="0.0.1.0"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/actionsWidget/1QTreeView0" command="setCurrent" arguments="0.0.2.0"/>
+    </events>
+</xml>

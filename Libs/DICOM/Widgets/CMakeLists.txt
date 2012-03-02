@@ -6,6 +6,16 @@ project(CTKDICOMWidgets)
 
 set(KIT_export_directive "CTK_DICOM_WIDGETS_EXPORT")
 
+#
+# Add the libraries QtTesting
+#
+if(CTK_USE_QTTESTING)
+  find_package(QtTesting REQUIRED)
+  include_directories(
+    ${QtTesting_INCLUDE_DIRS}
+    ${CTK_SUPERBUILD_BINARY_DIR} # For ctkConfig.h
+    )
+endif()
 
 # Source files
 set(KIT_SRCS
@@ -67,6 +77,15 @@ set(KIT_resources
 # Target libraries - See CMake/ctkFunctionGetTargetLibraries.cmake
 # The following macro will read the target libraries from the file 'target_libraries.cmake'
 ctkFunctionGetTargetLibraries(KIT_target_libraries)
+
+# If we use QtTessting, we add all the dependencies
+if(CTK_USE_QTTESTING)
+  list(APPEND KIT_SRCS
+    )
+  list(APPEND KIT_MOC_SRCS
+    )
+  list(APPEND KIT_target_libraries QtTesting)
+endif()
 
 ctkMacroBuildLib(
   NAME ${PROJECT_NAME}

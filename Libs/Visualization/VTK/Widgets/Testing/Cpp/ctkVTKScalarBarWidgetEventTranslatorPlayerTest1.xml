@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<xml>
+    <events>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/DisplayScalarBarCheckBox" command="set_boolean" arguments="true"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/DisplayScalarBarCheckBox" command="set_boolean" arguments="true"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="key" arguments="16777248"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="T"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="key" arguments="32"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test Q"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="key" arguments="16777248"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test Qt"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="key" arguments="16777248"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test QtTe"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test QtTest"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test QtTest"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test QtTest"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test QtTesting"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test QtTesting"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/TextLineEdit" command="set_string" arguments="Test QtTesting"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/ColorPickerButton" command="set_boolean" arguments="true"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/ColorPickerButton/1QColorDialog0/1QColorPicker0" command="mousePress" arguments="1,1,0,40,48"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/ColorPickerButton/1QColorDialog0/1QColorPicker0" command="mouseRelease" arguments="1,0,0,40,48"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/ColorPickerButton/1QColorDialog0/1QDialogButtonBox0/1QPushButton0" command="activate" arguments=""/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/OpacitySlider/1QSlider0" command="set_int" arguments="9"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/OpacitySlider/1QSlider0" command="set_int" arguments="8"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/OpacitySlider/1QSlider0" command="set_int" arguments="7"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/OpacitySlider/1QSlider0" command="set_int" arguments="6"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/FontComboBox" command="set_string" arguments="Times"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/ItalicCheckBox" command="set_boolean" arguments="false"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/BoldCheckBox" command="set_boolean" arguments="false"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/TitleGroupBox/TitleTextPropertyWidget/ShadowCheckBox" command="set_boolean" arguments="false"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="key" arguments="46"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="key" arguments="46"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="set_string" arguments="%-#6.3g..gh"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="set_string" arguments="%-#6.3g..gh"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="set_string" arguments="%-#6.3g..ght"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="set_string" arguments="%-#6.3g..ghtk"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="set_string" arguments="%-#6.3g..ghtkd"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="key" arguments="16777249"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/TextLineEdit" command="set_string" arguments="%-#6.3g..ghtkd"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/ColorPickerButton" command="set_boolean" arguments="true"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/ColorPickerButton/1QColorDialog0/1QWellArray0" command="mousePress" arguments="1,1,0,94,128"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/ColorPickerButton/1QColorDialog0/1QWellArray0" command="mouseRelease" arguments="1,0,0,94,128"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/ColorPickerButton/1QColorDialog0/1QDialogButtonBox0/1QPushButton0" command="activate" arguments=""/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/FontComboBox" command="set_string" arguments="Times"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/BoldCheckBox" command="set_boolean" arguments="false"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/ItalicCheckBox" command="set_boolean" arguments="false"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/LabelsGroupBox/LabelsTextPropertyWidget/ShadowCheckBox" command="set_boolean" arguments="false"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/MaxNumberOfColorsSpinBox" command="set_int" arguments="2"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/MaxNumberOfColorsSpinBox" command="set_int" arguments="20"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/MaxNumberOfColorsSpinBox" command="spin" arguments="up"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/MaxNumberOfColorsSpinBox" command="spin" arguments="up"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/NumberOfLabelsSpinBox" command="spin" arguments="down"/>
+        <event widget="ctkEventTranslatorPlayerWidget/centralwidget/stackedWidget/ctkVTKScalarBarWidget/NumberOfLabelsSpinBox" command="spin" arguments="down"/>
+    </events>
+</xml>

@@ -176,6 +176,7 @@ void ctkTreeComboBox::showPopup()
                                 i != d->VisibleModelColumn);
     }
   this->QComboBox::showPopup();
+  emit this->popupShow();
 }
 
 // -------------------------------------------------------------------------
@@ -205,7 +206,8 @@ void ctkTreeComboBox::hidePopup()
       QKeyEvent event(QEvent::ShortcutOverride, Qt::Key_Enter, Qt::NoModifier);
       QApplication::sendEvent(this->view(), &event);
       }
-    //qDebug() << "after2: " << this->currentIndex() << this->view()->currentIndex();
+    emit this->popupHide();
+    //Debug() << "after2: " << this->currentIndex() << this->view()->currentIndex();
     }
 }
 

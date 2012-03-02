@@ -6,6 +6,13 @@ project(CTKScriptingPythonWidgets)
 if(CTK_LIB_Scripting/Python/Core_PYTHONQT_USE_VTK)
   include(${VTK_USE_FILE})
 endif()
+if(CTK_USE_QTTESTING)
+  find_package(QtTesting REQUIRED)
+  include_directories(
+    ${QtTesting_INCLUDE_DIRS}
+    ${CTK_SUPERBUILD_BINARY_DIR} # For ctkConfig.h
+    )
+endif()
 
 #
 # See CTK/CMake/ctkMacroBuildLib.cmake for details

@@ -39,3 +39,10 @@ SIMPLE_TEST(ctkDICOMModelTest2
 SIMPLE_TEST(ctkDICOMQueryRetrieveWidgetTest1)
 SIMPLE_TEST(ctkDICOMQueryResultsTabWidgetTest1)
 SIMPLE_TEST(ctkDICOMThumbnailListWidgetTest1)
+
+#
+# Add Tests expecting CTK_USE_QTTESTING to be set
+#
+if(CTK_USE_QTTESTING)
+
+endif()
