@@ -67,6 +67,8 @@ set(KIT_SRCS
   ctkExpandButton.h
   ctkFileDialog.cpp
   ctkFileDialog.h
+  ctkFileValidator.cpp
+  ctkFileValidator.h
   ctkFittedTextBrowser.cpp
   ctkFittedTextBrowser.h
   ctkFlatProxyModel.cpp
@@ -198,6 +200,7 @@ set(KIT_MOC_SRCS
   ctkErrorLogStatusMessageHandler.h
   ctkExpandButton.h
   ctkFileDialog.h
+  ctkFileValidator.h
   ctkFittedTextBrowser.h
   ctkFlatProxyModel.h
   ctkFlowLayout.h

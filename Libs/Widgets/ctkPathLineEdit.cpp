@@ -27,10 +27,10 @@
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QRegExp>
-#include <QRegExpValidator>
 #include <QSettings>
 
 // CTK includes
+#include "ctkFileValidator.h"
 #include "ctkPathLineEdit.h"
 #include "ctkUtils.h"
 
@@ -48,6 +48,7 @@ public:
   void updateFilter();
 
   QComboBox*            ComboBox;
+  ctkFileValidator*     FileValidator;
 
   QString               Label;              //!< used in file dialogs
   QStringList           NameFilters;        //!< Regular expression (in wildcard mode) used to help the user to complete the line
@@ -72,6 +73,7 @@ ctkPathLineEditPrivate::ctkPathLineEditPrivate(ctkPathLineEdit& object)
   :q_ptr(&object)
 {
   this->ComboBox = 0;
+  this->FileValidator = 0;
   this->HasValidInput = false;
   this->Filters = QDir::AllEntries|QDir::NoDotAndDotDot|QDir::Readable;
 }
@@ -86,6 +88,9 @@ void ctkPathLineEditPrivate::init()
   layout->setContentsMargins(0,0,0,0);
 
   this->ComboBox->setEditable(true);
+  this->FileValidator = new ctkFileValidator(q);
+  this->ComboBox->lineEdit()->setValidator(this->FileValidator);
+
   q->setSizePolicy(QSizePolicy(
                      QSizePolicy::Expanding, QSizePolicy::Fixed,
                      QSizePolicy::LineEdit));
@@ -94,19 +99,31 @@ void ctkPathLineEditPrivate::init()
                    q, SLOT(setCurrentDirectory(QString)));
   QObject::connect(this->ComboBox,SIGNAL(editTextChanged(QString)),
                    q, SLOT(updateHasValidInput()));
+  QObject::connect(this->ComboBox->lineEdit(), SIGNAL(editingFinished()),
+                   q, SIGNAL(editingFinished()));
 }
 
 //-----------------------------------------------------------------------------
 void ctkPathLineEditPrivate::updateFilter()
 {
   Q_Q(ctkPathLineEdit);
+
   // help completion for the QComboBox::QLineEdit
   QCompleter *newCompleter = new QCompleter(q);
+  QDir::Filters filters = this->Filters | QDir::NoDotAndDotDot;
+  if (filters & QDir::Files)
+    {
+    filters = filters| QDir::AllDirs;
+    }
   newCompleter->setModel(new QDirModel(
                            ctk::nameFiltersToExtensions(this->NameFilters),
-                           this->Filters | QDir::NoDotAndDotDot | QDir::AllDirs,
+                           filters,
                            QDir::Name|QDir::DirsLast, newCompleter));
   this->ComboBox->setCompleter(newCompleter);
+
+  // Validation of the line edit
+  this->FileValidator->setNameFilters(this->NameFilters);
+  this->FileValidator->setFilters(q->filters());
 }
 
 //-----------------------------------------------------------------------------
@@ -159,9 +176,6 @@ void ctkPathLineEdit::setNameFilters(const QStringList &nameFilters)
   Q_D(ctkPathLineEdit);
   d->NameFilters = nameFilters;
   d->updateFilter();
-  d->ComboBox->lineEdit()->setValidator(
-    new QRegExpValidator(
-      ctk::nameFiltersToRegExp(d->NameFilters), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -209,13 +223,27 @@ const ctkPathLineEdit::Options& ctkPathLineEdit::options()const
 }
 
 //-----------------------------------------------------------------------------
+void ctkPathLineEdit::setMustExists(bool mustExists)
+{
+  Q_D(ctkPathLineEdit);
+  d->FileValidator->setMustExists(mustExists);
+}
+
+//-----------------------------------------------------------------------------
+bool ctkPathLineEdit::mustExists()const
+{
+  Q_D(const ctkPathLineEdit);
+  return d->FileValidator->mustExists();
+}
+
+//-----------------------------------------------------------------------------
 void ctkPathLineEdit::browse()
 {
   Q_D(ctkPathLineEdit);
   QString path = "";
   if ( d->Filters & QDir::Files ) //file
     {
-    if ( d->Filters & QDir::Writable) // load or save
+    if ( !this->mustExists() ) // load or save
       {
       path = QFileDialog::getSaveFileName(
 	this,
@@ -264,6 +292,7 @@ void ctkPathLineEdit::browse()
     return;
     }
   this->setCurrentPath(path);
+  emit editingFinished();
 }
 
 //-----------------------------------------------------------------------------

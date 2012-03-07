@@ -75,7 +75,7 @@ class CTK_WIDGETS_EXPORT ctkPathLineEdit: public QWidget
   Q_PROPERTY(Options options READ options WRITE setOptions)
   Q_FLAGS(Option Options);
 #endif
-
+  Q_PROPERTY ( bool mustExists READ mustExists WRITE setMustExists)
 public:
   enum Filter { Dirs        = 0x001,
                 Files       = 0x002,
@@ -141,6 +141,9 @@ public:
   void setFilters(const Filters& filters);
   Filters filters()const;
 
+  void setMustExists(bool mustExists);
+  bool mustExists()const;
+
   /// Options of the file dialog pop up.
   /// \sa QFileDialog::getExistingDirectory
 #ifdef USE_QFILEDIALOG_OPTIONS
@@ -162,6 +165,11 @@ Q_SIGNALS:
   void validInputChanged(bool);
 
   void currentPathChanged(const QString& path);
+
+  /// This signal is emitted when the Return or Enter key is pressed,
+  /// the line edit loses focus or when "browse" is called with a new
+  /// path.
+  void editingFinished();
 
 public Q_SLOTS:
   void setCurrentPath(const QString& path);
