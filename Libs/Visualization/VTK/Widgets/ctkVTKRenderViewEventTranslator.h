@@ -29,9 +29,9 @@
 
 // CTK includes
 #include <ctkPimpl.h>
-#include "ctkWidgetsExport.h"
+#include "ctkVisualizationVTKWidgetsExport.h"
 
-class CTK_WIDGETS_EXPORT ctkVTKRenderViewEventTranslator :
+class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKRenderViewEventTranslator :
   public pqWidgetEventTranslator
 {
   Q_OBJECT

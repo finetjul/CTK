@@ -26,12 +26,12 @@
 
 // CTK includes
 #include <ctkPimpl.h>
-#include "ctkWidgetsExport.h"
+#include "ctkVisualizationVTKWidgetsExport.h"
 
 /// Concrete implementation of pqWidgetEventPlayer that translates
 /// high-level events into low-level Qt events.
 
-class CTK_WIDGETS_EXPORT ctkVTKRenderViewEventPlayer :
+class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKRenderViewEventPlayer :
   public pqWidgetEventPlayer
 {
   Q_OBJECT
