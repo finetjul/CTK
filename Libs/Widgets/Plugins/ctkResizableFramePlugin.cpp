@@ -18,68 +18,62 @@
 
 =========================================================================*/
 
-// Qt includes
-#include <QDebug>
-
 // CTK includes
-#include "ctkCollapsibleGroupBoxPlugin.h"
-#include "ctkCollapsibleGroupBox.h"
+#include "ctkResizableFramePlugin.h"
+#include "ctkResizableFrame.h"
 
 // --------------------------------------------------------------------------
-ctkCollapsibleGroupBoxPlugin
-::ctkCollapsibleGroupBoxPlugin(QObject* parentObject)
+ctkResizableFramePlugin
+::ctkResizableFramePlugin(QObject* parentObject)
   : QObject(parentObject)
 {
 }
 
 // --------------------------------------------------------------------------
-QWidget *ctkCollapsibleGroupBoxPlugin
+QWidget *ctkResizableFramePlugin
 ::createWidget(QWidget* futurParentWidget)
 {
-  ctkCollapsibleGroupBox* widget =
-    new ctkCollapsibleGroupBox(futurParentWidget);
+  ctkResizableFrame* widget =
+    new ctkResizableFrame(futurParentWidget);
   return widget;
 }
 
 // --------------------------------------------------------------------------
-QString ctkCollapsibleGroupBoxPlugin::domXml() const
+QString ctkResizableFramePlugin::domXml() const
 {
-  return "<widget class=\"ctkCollapsibleGroupBox\" \
-          name=\"CollapsibleGroupBox\">\n"
+  return "<widget class=\"ctkResizableFrame\" \
+          name=\"ResizableFrame\">\n"
           " <property name=\"geometry\">\n"
           "  <rect>\n"
           "   <x>0</x>\n"
           "   <y>0</y>\n"
           "   <width>300</width>\n"
-          "   <height>100</height>\n"
+          "   <height>300</height>\n"
           "  </rect>\n"
           " </property>\n"
-          " <property name=\"title\">"
-          "  <string>GroupBox</string>"
-          " </property>"
           "</widget>\n";
 }
 
 // --------------------------------------------------------------------------
-QIcon ctkCollapsibleGroupBoxPlugin::icon() const
+QIcon ctkResizableFramePlugin::icon() const
 {
-  return QIcon(":/Icons/groupboxcollapsible.png");
+  return QIcon(":/Icons/widget.png");
 }
 
 // --------------------------------------------------------------------------
-QString ctkCollapsibleGroupBoxPlugin::includeFile() const
+QString ctkResizableFramePlugin::includeFile() const
 {
-  return "ctkCollapsibleGroupBox.h";
+  return "ctkResizableFrame.h";
 }
 
 // --------------------------------------------------------------------------
-bool ctkCollapsibleGroupBoxPlugin::isContainer() const
+bool ctkResizableFramePlugin::isContainer() const
 {
   return true;
 }
 
 // --------------------------------------------------------------------------
-QString ctkCollapsibleGroupBoxPlugin::name() const
+QString ctkResizableFramePlugin::name() const
 {
-  return "ctkCollapsibleGroupBox";
+  return "ctkResizableFrame";
 }

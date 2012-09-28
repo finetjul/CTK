@@ -124,6 +124,8 @@ set(KIT_SRCS
   ctkRangeSlider.h
   ctkRangeWidget.cpp
   ctkRangeWidget.h
+  ctkResizableFrame.cpp
+  ctkResizableFrame.h
   ctkScreenshotDialog.cpp
   ctkScreenshotDialog.h
   ctkScreenshotDialog_p.h
@@ -237,6 +239,7 @@ set(KIT_MOC_SRCS
   ctkQImageView.h
   ctkRangeSlider.h
   ctkRangeWidget.h
+  ctkResizableFrame.h
   ctkScreenshotDialog.h
   ctkScreenshotDialog_p.h
   ctkSearchBox.h

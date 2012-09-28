@@ -74,6 +74,8 @@ set(PLUGIN_SRCS
   ctkRangeSliderPlugin.h
   ctkRangeWidgetPlugin.cpp
   ctkRangeWidgetPlugin.h
+  ctkResizableFramePlugin.cpp
+  ctkResizableFramePlugin.h
   ctkThumbnailLabelPlugin.cpp
   ctkThumbnailLabelPlugin.h
   ctkTransferFunctionViewPlugin.cpp
@@ -129,6 +131,7 @@ set(PLUGIN_MOC_SRCS
   ctkPopupWidgetPlugin.h
   ctkRangeSliderPlugin.h
   ctkRangeWidgetPlugin.h
+  ctkResizableFramePlugin.h
   ctkThumbnailLabelPlugin.h
   ctkTransferFunctionViewPlugin.h
   ctkTreeComboBoxPlugin.h

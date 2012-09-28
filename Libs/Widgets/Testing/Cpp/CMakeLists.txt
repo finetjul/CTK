@@ -58,6 +58,7 @@ set(TEST_SOURCES
   ctkRangeSliderTest1.cpp
   ctkRangeWidgetTest1.cpp
   ctkRangeWidgetTest2.cpp
+  ctkResizableFrameTest1.cpp
   ctkDateRangeWidgetTest1.cpp
   ctkScreenshotDialogTest1.cpp
   ctkSearchBoxTest1.cpp
@@ -256,6 +257,7 @@ SIMPLE_TEST( ctkRangeSliderTest )
 SIMPLE_TEST( ctkRangeSliderTest1 )
 SIMPLE_TEST( ctkRangeWidgetTest1 )
 SIMPLE_TEST( ctkRangeWidgetTest2 )
+SIMPLE_TEST( ctkResizableFrameTest1 )
 SIMPLE_TEST( ctkScreenshotDialogTest1 )
 SIMPLE_TEST( ctkSearchBoxTest1 )
 SIMPLE_TEST( ctkSearchBoxTest2 )
