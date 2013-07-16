@@ -300,6 +300,7 @@ void ctkRangeWidget::setMaximum(double max)
 void ctkRangeWidget::setRange(double min, double max)
 {
   Q_D(ctkRangeWidget);
+  qDebug() << "setRange" << min << max;
   
   double oldMin = d->MinimumSpinBox->minimum();
   double oldMax = d->MaximumSpinBox->maximum();
@@ -316,12 +317,15 @@ void ctkRangeWidget::setRange(double min, double max)
   d->SettingSliderRange = false;
   Q_ASSERT(d->equal(d->MinimumSpinBox->minimum(), d->Slider->minimum()));
   Q_ASSERT(d->equal(d->MaximumSpinBox->maximum(), d->Slider->maximum()));
+  Q_ASSERT(d->equal(d->Slider->minimumValue(), d->MinimumSpinBox->value()));
+  Q_ASSERT(d->equal(d->Slider->maximumValue(), d->MaximumSpinBox->value()));
   d->updateSpinBoxWidth();
   if (oldMin != d->MinimumSpinBox->minimum() ||
       oldMax != d->MaximumSpinBox->maximum())
     {
     emit rangeChanged(d->MinimumSpinBox->minimum(), d->MaximumSpinBox->maximum());
     }
+  qDebug() << "end setRange";
 }
 
 // --------------------------------------------------------------------------
@@ -385,6 +389,8 @@ double ctkRangeWidget::maximumValue()const
 void ctkRangeWidget::setMinimumValue(double _value)
 {
   Q_D(ctkRangeWidget);
+  qDebug() << "setMinimumValue" << _value;
+
   // disable the tracking temporally to emit the
   // signal valueChanged if changeValue() is called
   bool isChanging = d->Changing;
@@ -394,12 +400,14 @@ void ctkRangeWidget::setMinimumValue(double _value)
   Q_ASSERT(d->equal(d->Slider->minimumValue(), d->MinimumSpinBox->value()));
   // restore the prop
   d->Changing = isChanging;
+  qDebug() << "end setMinimumValue";
 }
 
 // --------------------------------------------------------------------------
 void ctkRangeWidget::setMaximumValue(double _value)
 {
   Q_D(ctkRangeWidget);
+  qDebug() << "setMaximumValue" << _value;
   // disable the tracking temporally to emit the
   // signal valueChanged if changeValue() is called
   bool isChanging = d->Changing;
@@ -409,12 +417,14 @@ void ctkRangeWidget::setMaximumValue(double _value)
   Q_ASSERT(d->equal(d->Slider->maximumValue(), d->MaximumSpinBox->value()));
   // restore the prop
   d->Changing = isChanging;
+  qDebug() << "end setMaximumValue";
 }
 
 // --------------------------------------------------------------------------
 void ctkRangeWidget::setValues(double newMinimumValue, double newMaximumValue)
 {
   Q_D(ctkRangeWidget);
+  qDebug() << "setValues" << newMinimumValue << newMaximumValue;
   if (newMinimumValue > newMaximumValue)
     {
     qSwap(newMinimumValue, newMaximumValue);
@@ -442,6 +452,7 @@ void ctkRangeWidget::setValues(double newMinimumValue, double newMaximumValue)
   Q_ASSERT(d->equal(d->Slider->maximumValue(), d->MaximumSpinBox->value()));
   // restore the prop
   d->Changing = isChanging;
+  qDebug() << "end setValues";
 }
 
 // --------------------------------------------------------------------------
@@ -575,8 +586,8 @@ bool ctkRangeWidget::eventFilter(QObject *obj, QEvent *event)
 double ctkRangeWidget::singleStep()const
 {
   Q_D(const ctkRangeWidget);
-  Q_ASSERT(d->equal(d->Slider->singleStep(), d->MinimumSpinBox->singleStep()) &&
-           d->equal(d->Slider->singleStep(), d->MaximumSpinBox->singleStep()));
+  Q_ASSERT(d->equal(d->Slider->singleStep(), d->MinimumSpinBox->singleStep()));
+  Q_ASSERT(d->equal(d->Slider->singleStep(), d->MaximumSpinBox->singleStep()));
   return d->Slider->singleStep();
 }
 
@@ -584,11 +595,26 @@ double ctkRangeWidget::singleStep()const
 void ctkRangeWidget::setSingleStep(double step)
 {
   Q_D(ctkRangeWidget);
+  const double minSingleStep( qMax(this->maximum() / std::numeric_limits<int>::max(),
+                                   std::numeric_limits<double>::epsilon()) );
+  const double maxSingleStep( qMin(this->maximum() - this->minimum(),
+                                   static_cast<double>(std::numeric_limits<int>::max())) );
+  if (step < minSingleStep || step > maxSingleStep)
+    {
+    qWarning() << "ctkRangeWidget single step is out of bounds";
+    return;
+    }
+  qDebug() << "setSingleStep" << step;
+  qDebug() << "min slider: " << d->Slider->minimumValue() << "max slider" << d->Slider->maximumValue();
+  qDebug() << "min spinbox: " << d->MinimumSpinBox->value() << "max spinBox" << d->MaximumSpinBox->value();
   d->MinimumSpinBox->setSingleStep(step);
   d->MaximumSpinBox->setSingleStep(step);
+  qDebug() << "min single step: " << d->MinimumSpinBox->singleStep();
   d->Slider->setSingleStep(d->MinimumSpinBox->singleStep());
-  Q_ASSERT(d->equal(d->Slider->singleStep(), d->MinimumSpinBox->singleStep()) &&
-           d->equal(d->Slider->singleStep(), d->MaximumSpinBox->singleStep()));
+  Q_ASSERT(d->equal(d->Slider->singleStep(), d->MinimumSpinBox->singleStep()));
+  Q_ASSERT(d->equal(d->Slider->singleStep(), d->MaximumSpinBox->singleStep()));
+  Q_ASSERT(d->equal(d->Slider->minimumValue(), d->MinimumSpinBox->value()));
+  Q_ASSERT(d->equal(d->Slider->maximumValue(), d->MaximumSpinBox->value()));
 }
 
 // --------------------------------------------------------------------------
