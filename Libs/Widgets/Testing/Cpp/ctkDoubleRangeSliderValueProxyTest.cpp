@@ -124,7 +124,7 @@ void ctkDoubleRangeSliderValueProxyTester::testSetValues()
   slider.setValueProxy(&proxy);
 
   // Spy
-  CustomSpy valuesSpy();
+  CustomSpy valuesSpy;
   QObject::connect(&slider, SIGNAL(valuesChanged(double, double)),
                    &valuesSpy, SLOT(onValuesChanged(double, double)));
 

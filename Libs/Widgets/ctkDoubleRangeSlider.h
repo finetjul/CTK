@@ -253,6 +253,9 @@ protected Q_SLOTS:
   void onPositionsChanged(int min, int max);
   void onRangeChanged(int min, int max);
 
+  void onValueProxyAboutToBeModified();
+  void onValueProxyModified();
+
 protected:
   ctkRangeSlider* slider()const;
   /// Subclasses can change the internal slider

@@ -66,6 +66,9 @@ private slots:
 
   void testSetDisplayedValue();
   void testSetDisplayedValue_data();
+
+  void testSetCoefficient();
+  void testSetCoefficient_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -330,6 +333,41 @@ void ctkDoubleSpinBoxValueProxyTester::testSetDisplayedValue_data()
   QTest::newRow("Linear: Nan")
     << 5.0 << 12.0 << std::numeric_limits<double>::quiet_NaN()
     << 37.6 << "37.60" << 200.0;
+}
+
+//-----------------------------------------------------------------------------
+void ctkDoubleSpinBoxValueProxyTester::testSetCoefficient()
+{
+  ctkDoubleSpinBox spinBox;
+  spinBox.setRange(-10000., 10000.);
+  spinBox.setValue(10.);
+
+  ctkLinearValueProxy proxy;
+  proxy.setCoefficient(10.);
+  spinBox.setValueProxy(&proxy);
+
+  ctkTest::COMPARE(spinBox.value(), 10.);
+  ctkTest::COMPARE(spinBox.displayedValue(), 100.);
+
+  QFETCH(double, newCoefficient);
+  proxy.setCoefficient(newCoefficient);
+
+  QFETCH(double, expectedDisplayedValue);
+  ctkTest::COMPARE(spinBox.value(), 10.);
+  ctkTest::COMPARE(spinBox.displayedValue(), expectedDisplayedValue);
+}
+
+//-----------------------------------------------------------------------------
+void ctkDoubleSpinBoxValueProxyTester::testSetCoefficient_data()
+{
+  QTest::addColumn<double>("newCoefficient");
+  QTest::addColumn<double>("expectedDisplayedValue");
+
+  QTest::newRow("100") << 100.0 << 1000.;
+  QTest::newRow("10") << 10.0 << 100.;
+  QTest::newRow("1") << 1.0 << 10.;
+  QTest::newRow("0.10") << 0.1 << 1.;
+  QTest::newRow("-10") << -10.0 << -100.;
 }
 
 // ----------------------------------------------------------------------------

@@ -94,6 +94,7 @@ public:
   mutable int CachedDecimals;
 
   QWeakPointer<ctkValueProxy> Proxy;
+  double InputValue;
 
   void init();
   /// Compare two double previously rounded according to the number of decimals
@@ -127,4 +128,7 @@ public:
 public Q_SLOTS:
   void editorTextChanged(const QString& text);
   void onValueChanged();
+
+  void onValueProxyAboutToBeModified();
+  void onValueProxyModified();
 };

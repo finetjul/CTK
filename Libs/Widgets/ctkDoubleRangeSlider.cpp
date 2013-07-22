@@ -65,6 +65,8 @@ public:
   double MaxValue;
 
   QWeakPointer<ctkValueProxy> Proxy;
+  double InputMinValue;
+  double InputMaxValue;
 
 private:
   Q_DISABLE_COPY(ctkDoubleRangeSliderPrivate);
@@ -85,6 +87,8 @@ ctkDoubleRangeSliderPrivate::ctkDoubleRangeSliderPrivate(ctkDoubleRangeSlider& o
   this->SingleStep = 1.;
   this->MinValue = 0.;
   this->MaxValue = 99.;
+  this->InputMinValue = 0.;
+  this->InputMaxValue = 0.;
 }
  
 // --------------------------------------------------------------------------
@@ -690,12 +694,29 @@ void ctkDoubleRangeSlider::setSlider(ctkRangeSlider* newslider)
 void ctkDoubleRangeSlider::setValueProxy(ctkValueProxy* proxy)
 {
   Q_D(ctkDoubleRangeSlider);
-  if (d->Proxy.data() == proxy)
+  if (proxy == d->Proxy.data())
     {
     return;
     }
 
+  this->onValueProxyAboutToBeModified();
+
+  if (d->Proxy.data())
+    {
+    disconnect(d->Proxy.data(), 0, this, 0);
+    }
+
   d->Proxy = proxy;
+
+  if (d->Proxy)
+    {
+    connect(d->Proxy.data(), SIGNAL(proxyAboutToBeModified()),
+            this, SLOT(onValueProxyAboutToBeModified()));
+    connect(d->Proxy.data(), SIGNAL(proxyModified()),
+            this, SLOT(onValueProxyModified()));
+    }
+
+  this->onValueProxyModified();
 }
 
 //----------------------------------------------------------------------------
@@ -703,4 +724,19 @@ ctkValueProxy* ctkDoubleRangeSlider::valueProxy() const
 {
   Q_D(const ctkDoubleRangeSlider);
   return d->Proxy.data();
+}
+
+//-----------------------------------------------------------------------------
+void ctkDoubleRangeSlider::onValueProxyAboutToBeModified()
+{
+  Q_D(ctkDoubleRangeSlider);
+  d->InputMinValue = this->minimumValue();
+  d->InputMaxValue = this->maximumValue();
+}
+
+//-----------------------------------------------------------------------------
+void ctkDoubleRangeSlider::onValueProxyModified()
+{
+  Q_D(ctkDoubleRangeSlider);
+  this->setValues(d->InputMinValue, d->InputMaxValue);
 }

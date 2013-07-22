@@ -76,7 +76,10 @@ public:
   double      SingleStep;
   double      PageStep;
   double      Value;
+  /// Converts input value with displayed value
   QWeakPointer<ctkValueProxy> Proxy;
+  /// Temporarily hold the input value while the proxy is being changed.
+  double      InputValue;
 };
 
 // --------------------------------------------------------------------------
@@ -91,6 +94,7 @@ ctkDoubleSliderPrivate::ctkDoubleSliderPrivate(ctkDoubleSlider& object)
   this->SingleStep = 1.;
   this->PageStep = 10.;
   this->Value = 0.;
+  this->InputValue = 0.;
 }
 
 // --------------------------------------------------------------------------
@@ -521,12 +525,29 @@ bool ctkDoubleSlider::eventFilter(QObject* watched, QEvent* event)
 void ctkDoubleSlider::setValueProxy(ctkValueProxy* proxy)
 {
   Q_D(ctkDoubleSlider);
-  if (d->Proxy.data() == proxy)
+  if (proxy == d->Proxy.data())
     {
     return;
     }
 
+  this->onValueProxyAboutToBeModified();
+
+  if (d->Proxy.data())
+    {
+    disconnect(d->Proxy.data(), 0, this, 0);
+    }
+
   d->Proxy = proxy;
+
+  if (d->Proxy)
+    {
+    connect(d->Proxy.data(), SIGNAL(proxyAboutToBeModified()),
+            this, SLOT(onValueProxyAboutToBeModified()));
+    connect(d->Proxy.data(), SIGNAL(proxyModified()),
+            this, SLOT(onValueProxyModified()));
+    }
+
+  this->onValueProxyModified();
 }
 
 //----------------------------------------------------------------------------
@@ -534,5 +555,19 @@ ctkValueProxy* ctkDoubleSlider::valueProxy() const
 {
   Q_D(const ctkDoubleSlider);
   return d->Proxy.data();
+}
+
+// --------------------------------------------------------------------------
+void ctkDoubleSlider::onValueProxyAboutToBeModified()
+{
+  Q_D(ctkDoubleSlider);
+  d->InputValue = this->value();
+}
+
+// --------------------------------------------------------------------------
+void ctkDoubleSlider::onValueProxyModified()
+{
+  Q_D(ctkDoubleSlider);
+  this->setValue(d->InputValue);
 }
 

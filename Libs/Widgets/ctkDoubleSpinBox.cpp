@@ -25,6 +25,7 @@
 #include "ctkPimpl.h"
 
 // Qt includes
+#include <QDebug>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -173,6 +174,7 @@ ctkDoubleSpinBoxPrivate::ctkDoubleSpinBoxPrivate(ctkDoubleSpinBox& object)
   this->DOption = ctkDoubleSpinBox::DecimalsByShortcuts
     | ctkDoubleSpinBox::InsertDecimals;
   this->InvertedControls = false;
+  this->InputValue = 0.;
 }
 
 //-----------------------------------------------------------------------------
@@ -663,6 +665,20 @@ void ctkDoubleSpinBoxPrivate::onValueChanged()
 }
 
 //-----------------------------------------------------------------------------
+void ctkDoubleSpinBoxPrivate::onValueProxyAboutToBeModified()
+{
+  Q_Q(ctkDoubleSpinBox);
+  this->InputValue = q->value();
+}
+
+//-----------------------------------------------------------------------------
+void ctkDoubleSpinBoxPrivate::onValueProxyModified()
+{
+  Q_Q(ctkDoubleSpinBox);
+  q->setValue(this->InputValue);
+}
+
+//-----------------------------------------------------------------------------
 // ctkDoubleSpinBox
 //-----------------------------------------------------------------------------
 ctkDoubleSpinBox::ctkDoubleSpinBox(QWidget* newParent)
@@ -1056,12 +1072,32 @@ bool ctkDoubleSpinBox::invertedControls() const
 void ctkDoubleSpinBox::setValueProxy(ctkValueProxy* proxy)
 {
   Q_D(ctkDoubleSpinBox);
-  if (d->Proxy.data() == proxy)
+  if (proxy == d->Proxy.data())
     {
     return;
     }
 
+  d->onValueProxyAboutToBeModified();
+
+  if (d->Proxy)
+    {
+    disconnect(d->Proxy.data(), SIGNAL(proxyAboutToBeModified()),
+               d, SLOT(onValueProxyAboutToBeModified()));
+    disconnect(d->Proxy.data(), SIGNAL(proxyModified()),
+               d, SLOT(onValueProxyModified()));
+    }
+
   d->Proxy = proxy;
+
+  if (d->Proxy)
+    {
+    connect(d->Proxy.data(), SIGNAL(proxyAboutToBeModified()),
+            d, SLOT(onValueProxyAboutToBeModified()));
+    connect(d->Proxy.data(), SIGNAL(proxyModified()),
+            d, SLOT(onValueProxyModified()));
+    }
+
+  d->onValueProxyModified();
 }
 
 //----------------------------------------------------------------------------

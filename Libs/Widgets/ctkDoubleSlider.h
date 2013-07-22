@@ -249,6 +249,8 @@ protected Q_SLOTS:
   void onValueChanged(int value);
   void onSliderMoved(int position);
   void onRangeChanged(int min, int max);
+  void onValueProxyAboutToBeModified();
+  void onValueProxyModified();
 
 protected:
   QScopedPointer<ctkDoubleSliderPrivate> d_ptr;
