@@ -72,9 +72,16 @@ public:
   /// This property holds the single step.
   /// The smaller of two natural steps that an abstract sliders provides and
   /// typically corresponds to the user pressing an arrow key
+  /// \sa isValidStep()
   void setSingleStep(double ss);
   double singleStep()const;
-  
+
+  /// Return true if the step can be handled by the slider, false otherwise.
+  /// An invalid step is a step that can't be used to convert from double
+  /// to int (too large or too small).
+  /// \sa singleStep
+  bool isValidStep(double step)const;
+
   /// 
   /// This property holds the interval between tickmarks.
   /// This is a value interval, not a pixel interval. If it is 0, the slider

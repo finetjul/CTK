@@ -56,8 +56,6 @@ public:
   bool          AutoSpinBoxWidth;
   Qt::Alignment SpinBoxAlignment;
   QWeakPointer<ctkValueProxy> Proxy;
-  double        InputMinValue;
-  double        InputMaxValue;
 };
 
 // --------------------------------------------------------------------------
@@ -85,8 +83,6 @@ ctkRangeWidgetPrivate::ctkRangeWidgetPrivate(ctkRangeWidget& object)
   this->MaximumValueBeforeChange = 0.;
   this->AutoSpinBoxWidth = true;
   this->SpinBoxAlignment = Qt::AlignVCenter;
-  this->InputMinValue = 0.;
-  this->InputMaxValue = 0.;
 }
 
 // --------------------------------------------------------------------------
@@ -242,17 +238,19 @@ ctkRangeWidget::~ctkRangeWidget()
 // --------------------------------------------------------------------------
 double ctkRangeWidget::minimum()const
 {
-  Q_D(const ctkRangeWidget);
-  Q_ASSERT(d->equal(d->MinimumSpinBox->minimum(),d->Slider->minimum()));
-  return d->Slider->minimum();
+//  Q_D(const ctkRangeWidget);
+  double minimumMaximum[2];
+  this->range(minimumMaximum);
+  return minimumMaximum[0];
 }
 
 // --------------------------------------------------------------------------
 double ctkRangeWidget::maximum()const
 {
-  Q_D(const ctkRangeWidget);
-  Q_ASSERT(d->equal(d->MaximumSpinBox->maximum(), d->Slider->maximum()));
-  return d->Slider->maximum();
+  //Q_D(const ctkRangeWidget);
+  double minimumMaximum[2];
+  this->range(minimumMaximum);
+  return minimumMaximum[1];
 }
 
 // --------------------------------------------------------------------------
@@ -263,6 +261,15 @@ void ctkRangeWidget::range(double* range)const
   Q_ASSERT(d->equal(d->MaximumSpinBox->maximum(), d->Slider->maximum()));
   range[0] = d->Slider->minimum();
   range[1] = d->Slider->maximum();
+  if (d->Proxy)
+    {
+    range[0] = d->Proxy.data()->valueFromProxyValue(range[0]);
+    range[1] = d->Proxy.data()->valueFromProxyValue(range[1]);
+    if (range[0] > range[1])
+      {
+      qSwap(range[0], range[1]);
+      }
+    }
 }
 
 // --------------------------------------------------------------------------
@@ -375,8 +382,8 @@ void ctkRangeWidget::values(double &minValue, double &maxValue)const
 
   if (d->Proxy)
     {
-    minValue = d->Proxy.data()->valueFromProxyValue(minValue);
-    maxValue = d->Proxy.data()->valueFromProxyValue(maxValue);
+    //minValue = d->Proxy.data()->valueFromProxyValue(minValue);
+    //maxValue = d->Proxy.data()->valueFromProxyValue(maxValue);
     }
 }
 
@@ -388,13 +395,13 @@ double ctkRangeWidget::minimumValue()const
 
   double minValue =
     d->Changing ? d->MinimumValueBeforeChange : d->Slider->minimumValue();
-    double maxValue =
-      d->Changing ? d->MaximumValueBeforeChange : d->Slider->maximumValue();
+  double maxValue =
+    d->Changing ? d->MaximumValueBeforeChange : d->Slider->maximumValue();
   if (d->Proxy)
     {
     /// The proxy can invert the signs (e.g. linear coef < 0.)
-    minValue = d->Proxy.data()->valueFromProxyValue(minValue);
-    maxValue = d->Proxy.data()->valueFromProxyValue(maxValue);
+    //minValue = d->Proxy.data()->valueFromProxyValue(minValue);
+    //maxValue = d->Proxy.data()->valueFromProxyValue(maxValue);
     }
   return qMin(minValue, maxValue);
 }
@@ -411,8 +418,8 @@ double ctkRangeWidget::maximumValue()const
     d->Changing ? d->MaximumValueBeforeChange : d->Slider->maximumValue();
   if (d->Proxy)
     {
-    minValue = d->Proxy.data()->valueFromProxyValue(minValue);
-    maxValue = d->Proxy.data()->valueFromProxyValue(maxValue);
+    //minValue = d->Proxy.data()->valueFromProxyValue(minValue);
+    //maxValue = d->Proxy.data()->valueFromProxyValue(maxValue);
     }
   return qMax(minValue, maxValue);
 }
@@ -423,7 +430,7 @@ void ctkRangeWidget::setMinimumValue(double _value)
   Q_D(ctkRangeWidget);
   if (d->Proxy)
     {
-    _value = d->Proxy.data()->proxyValueFromValue(_value);
+    //_value = d->Proxy.data()->proxyValueFromValue(_value);
     }
 
   // disable the tracking temporally to emit the
@@ -443,7 +450,7 @@ void ctkRangeWidget::setMaximumValue(double _value)
   Q_D(ctkRangeWidget);
   if (d->Proxy)
     {
-    _value = d->Proxy.data()->proxyValueFromValue(_value);
+    //_value = d->Proxy.data()->proxyValueFromValue(_value);
     }
 
   // disable the tracking temporally to emit the
@@ -463,8 +470,8 @@ void ctkRangeWidget::setValues(double newMinimumValue, double newMaximumValue)
   Q_D(ctkRangeWidget);
   if (d->Proxy)
     {
-    newMinimumValue = d->Proxy.data()->proxyValueFromValue(newMinimumValue);
-    newMaximumValue = d->Proxy.data()->proxyValueFromValue(newMaximumValue);
+    //newMinimumValue = d->Proxy.data()->proxyValueFromValue(newMinimumValue);
+    //newMaximumValue = d->Proxy.data()->proxyValueFromValue(newMaximumValue);
     }
 
   if (newMinimumValue > newMaximumValue)
@@ -637,6 +644,13 @@ double ctkRangeWidget::singleStep()const
 void ctkRangeWidget::setSingleStep(double step)
 {
   Q_D(ctkRangeWidget);
+  if (d->Slider->isValidStep(step))
+    {
+    qWarning() << "ctkRangeWidget::setSingleStep(" << step << ")"
+               << "is outside valid bounds";
+    return;
+    }
+  /*
   const double minSingleStep( qMax(this->maximum() / std::numeric_limits<int>::max(),
                                    std::numeric_limits<double>::epsilon()) );
   const double maxSingleStep( qMin(this->maximum() - this->minimum(),
@@ -646,6 +660,7 @@ void ctkRangeWidget::setSingleStep(double step)
     qWarning() << "ctkRangeWidget single step is out of bounds";
     return;
     }
+  */
   d->MinimumSpinBox->setSingleStep(step);
   d->MaximumSpinBox->setSingleStep(step);
   d->Slider->setSingleStep(d->MinimumSpinBox->singleStep());
@@ -893,13 +908,20 @@ ctkValueProxy* ctkRangeWidget::valueProxy() const
 void ctkRangeWidget::onValueProxyAboutToBeModified()
 {
   Q_D(ctkRangeWidget);
-  d->InputMinValue = this->minimumValue();
-  d->InputMaxValue = this->maximumValue();
+  d->Slider->setProperty("inputMinimumValue", this->minimumValue());
+  d->Slider->setProperty("inputMaximumValue", this->maximumValue());
+  d->Slider->setProperty("inputMinimum", this->minimum());
+  d->Slider->setProperty("inputMaximum", this->maximum());
+  d->Slider->setProperty("inputSingleStep", this->singleStep());
 }
 
 //-----------------------------------------------------------------------------
 void ctkRangeWidget::onValueProxyModified()
 {
   Q_D(ctkRangeWidget);
-  this->setValues(d->InputMinValue, d->InputMaxValue);
+  this->setSingleStep(d->Slider->property("inputSingleStep").toDouble());
+  this->setRange(d->Slider->property("inputMinimum").toDouble(),
+                 d->Slider->property("inputMaximum").toDouble());
+  this->setValues(d->Slider->property("inputMinimumValue").toDouble(),
+                  d->Slider->property("inputMaximumValue").toDouble());
 }

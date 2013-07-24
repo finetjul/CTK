@@ -94,7 +94,6 @@ public:
   mutable int CachedDecimals;
 
   QWeakPointer<ctkValueProxy> Proxy;
-  double InputValue;
 
   void init();
   /// Compare two double previously rounded according to the number of decimals

@@ -192,7 +192,7 @@ void ctkDoubleSpinBoxTester::testSetRange_data()
   QTest::newRow("[min,max]")
     << std::numeric_limits<double>::min()
     << std::numeric_limits<double>::max()
-    << std::numeric_limits<double>::min()
+    << 0. // rounded to 2 decimals
     << std::numeric_limits<double>::max()
     << 25.;
   QTest::newRow("[-max,max]")
