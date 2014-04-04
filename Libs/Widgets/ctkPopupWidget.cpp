@@ -102,6 +102,7 @@ bool ctkPopupWidgetPrivate::eventFilter(QObject* obj, QEvent* event)
       {
       QMoveEvent* moveEvent = dynamic_cast<QMoveEvent*>(event);
       QPoint topLeft = widget->parentWidget() ? widget->parentWidget()->mapToGlobal(moveEvent->pos()) : moveEvent->pos();
+      topLeft += QPoint(widget->geometry().x() - widget->x(), widget->geometry().y() - widget->y());
       topLeft += this->BaseWidget->mapTo(widget, QPoint(0,0));
       //q->move(q->pos() + moveEvent->pos() - moveEvent->oldPos());
       QRect newBaseGeometry = this->baseGeometry();
