@@ -223,5 +223,19 @@ void ctkFileDialog::accept()
       return;
       }
     }
+  // Don't accept read-only directories if we are in AcceptSave mode.
+  if ((this->fileMode() == Directory || this->fileMode() == DirectoryOnly) &&
+      this->acceptMode() == AcceptSave)
+    {
+    QStringList files = this->selectedFiles();
+    QString fn = files.first();
+    QFileInfo info(fn);
+    if (info.isDir() && !info.isWritable())
+      {
+      qDebug() << "bad directory" << fn;
+      this->setDirectory(info.absoluteFilePath());
+      return;
+      }
+    }
   this->Superclass::accept();
 }
