@@ -76,6 +76,7 @@ public:
   vtkSmartPointer<vtkRenderer>                Renderer;
   vtkSmartPointer<vtkImageMapper>             ImageMapper;
   vtkSmartPointer<vtkActor2D>                 HighlightedBoxActor;
+  vtkSmartPointer<vtkActor2D>                 ImageActor;
 };
 }
 
@@ -127,12 +128,12 @@ void RenderWindowItem::SetupImageMapperActor(double colorWindow, double colorLev
   this->ImageMapper->SetColorLevel(colorLevel);
 
   // .. and its corresponding 2D actor
-  vtkNew<vtkActor2D> actor2D;
-  actor2D->SetMapper(this->ImageMapper);
-  actor2D->GetProperty()->SetDisplayLocationToBackground();
+  this->ImageActor = vtkSmartPointer<vtkActor2D>::New();
+  this->ImageActor->SetMapper(this->ImageMapper);
+  this->ImageActor->GetProperty()->SetDisplayLocationToBackground();
 
   // .. and add it to the renderer
-  this->Renderer->AddActor2D(actor2D.GetPointer());
+  //this->Renderer->AddActor2D(this->ImageActor.GetPointer());
 }
 
 //---------------------------------------------------------------------------
@@ -212,7 +213,7 @@ void RenderWindowItem::SetupHighlightedBoxActor(const double highlightedBoxColor
   this->HighlightedBoxActor->GetProperty()->SetLineWidth(1.0f);
   this->HighlightedBoxActor->SetVisibility(visible);
 
-  this->Renderer->AddActor2D(this->HighlightedBoxActor);
+  //this->Renderer->AddActor2D(this->HighlightedBoxActor);
 }
 
 //-----------------------------------------------------------------------------
@@ -481,6 +482,10 @@ void vtkLightBoxRendererManager::SetImageDataPort(vtkAlgorithmOutput* newImageDa
 #endif
     return;
     }
+#if (VTK_MAJOR_VERSION > 5)
+  bool wereActorsAdded = (this->Internal->ImageDataPort != 0);
+#endif
+
   vtkInternal::RenderWindowItemListIt it;
   for(it = this->Internal->RenderWindowItemList.begin();
       it != this->Internal->RenderWindowItemList.end();
@@ -490,6 +495,16 @@ void vtkLightBoxRendererManager::SetImageDataPort(vtkAlgorithmOutput* newImageDa
     (*it)->ImageMapper->SetInput(newImageData);
 #else
     (*it)->ImageMapper->SetInputConnection(newImageDataPort);
+    if (!newImageDataPort && wereActorsAdded)
+      {
+      (*it)->Renderer->RemoveViewProp((*it)->ImageActor);
+      (*it)->Renderer->RemoveViewProp((*it)->HighlightedBoxActor);
+      }
+    else if (newImageDataPort && !wereActorsAdded)
+      {
+      (*it)->Renderer->AddActor2D((*it)->ImageActor);
+      (*it)->Renderer->AddActor2D((*it)->HighlightedBoxActor);
+      }
 #endif
     }
 
@@ -506,6 +521,9 @@ void vtkLightBoxRendererManager::SetImageDataPort(vtkAlgorithmOutput* newImageDa
   this->Internal->ImageData = newImageData;
 #else
   this->Internal->ImageDataPort = newImageDataPort;
+  if (newImageDataPort && wereActorsAdded)
+    {
+    }
 #endif
 
   this->Modified();
