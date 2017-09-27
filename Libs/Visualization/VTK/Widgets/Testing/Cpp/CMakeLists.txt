@@ -40,6 +40,8 @@ if(CTK_USE_CHARTS)
   set(TEST_SOURCES
       ctkVTKChartViewTest1.cpp
       ctkVTKVolumePropertyWidgetTest1.cpp
+	  ctkVTKScalarsToColorsEditorTest1.cpp
+	  ctkVTKScalarsToColorsPreviewChartTest1.cpp
       ctkVTKScalarsToColorsViewTest1.cpp
       ctkVTKScalarsToColorsViewTest2.cpp
       ctkVTKScalarsToColorsViewTest3.cpp
