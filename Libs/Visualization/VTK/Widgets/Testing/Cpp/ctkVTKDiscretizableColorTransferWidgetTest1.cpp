@@ -74,8 +74,8 @@ int ctkVTKDiscretizableColorTransferWidgetTest1(int argc, char * argv [] )
   discretizableCTF->EnableOpacityMappingOn();
 
   ctkVTKDiscretizableColorTransferWidget mWidget;
-  mWidget.SetColorTransferFunction(discretizableCTF.Get());
-  mWidget.SetHistogramTable(table.Get());
+  mWidget.setColorTransferFunction(discretizableCTF.Get());
+  mWidget.setHistogramTable(table.Get());
   mWidget.show();
 
   if (argc < 2 || QString(argv[1]) != "-I")

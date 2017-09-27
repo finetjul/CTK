@@ -1,88 +1,84 @@
+/*=========================================================================
+
+  Library:   CTK
+
+  Copyright (c) Kitware Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=========================================================================*/
+
 #ifndef __ctkVTKDiscretizableColorTransferWidget_h
 #define __ctkVTKDiscretizableColorTransferWidget_h
 
+// CTK includes
 #include "ctkVisualizationVTKWidgetsExport.h"
-
-#include <QWidget>
-#include <vtkSmartPointer.h>
-
+class ctkVTKDiscretizableColorTransferWidgetPrivate;
 class ctkVTKScalarsToColorsComboBox;
-class ctkVTKScalarsToColorsEditor;
-class vtkContextView;
-class vtkEventQtSlotConnect;
-class vtkObject;
+
+// VTK includes
+#include <vtkSmartPointer.h>
+class QVTKWidget;
 class vtkPiecewiseFunction;
 class vtkScalarsToColors;
 class vtkTable;
-class QComboBox;
+
+// Qt includes
+#include <QWidget>
 class QCheckBox;
 class QLineEdit;
 class QSpinBox;
 class QToolButton;
-class QVTKWidget;
 
 class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKDiscretizableColorTransferWidget: public QWidget
 {
 Q_OBJECT
 public:
-	explicit ctkVTKDiscretizableColorTransferWidget(QWidget* parent_ = nullptr);
+  explicit ctkVTKDiscretizableColorTransferWidget(QWidget* parent_ = nullptr);
   virtual ~ctkVTKDiscretizableColorTransferWidget();
 
-  void SetColorTransferFunction(vtkScalarsToColors* ctf);
-  void SetHistogramTable(vtkTable* histogram);
+  void setColorTransferFunction(vtkScalarsToColors* ctf);
+  void setHistogramTable(vtkTable* histogram);
 
 signals:
-	void dynamicChanged(double min, double max);
-	void toogleVolumeRendering(bool enable);
+  void dynamicChanged(double min, double max);
+  void toogleVolumeRendering(bool enable);
 
   void currentScalarsToColorsModified();
   void currentScalarsToColorsChanged(vtkScalarsToColors* ctf);
 
 public slots:
-	void transparencyChanged(int value100);
-	void onScalarOpacityFunctionChanged();
+  void transparencyChanged(double opacity);
+  void onScalarOpacityFunctionChanged();
 
   void onCurrentPointChanged();
-	void onCurrentPointEdit();
+  void onCurrentPointEdit();
   void onCurrentPointModified();
 
-	void onResetRangeClicked();
-	void onCenterRangeClicked();
-	void onInvertClicked();
-	void onRangeEditorReturn();
+  void onResetRangeClicked();
+  void onCenterRangeClicked();
+  void onInvertClicked();
+  void onRangeEditorReturn();
 
   void onPaletteIndexChanged(vtkScalarsToColors* ctf);
   void onHistogramDataModified(vtkTable* histogramTable);
 
+protected:
+  QScopedPointer<ctkVTKDiscretizableColorTransferWidgetPrivate> d_ptr;
 
 private:
-	QIcon getColorIcon(QColor color);
+  Q_DECLARE_PRIVATE(ctkVTKDiscretizableColorTransferWidget);
+  Q_DISABLE_COPY(ctkVTKDiscretizableColorTransferWidget);
 
-  ctkVTKScalarsToColorsComboBox* scalarsToColorsSelector;
-  vtkSmartPointer<ctkVTKScalarsToColorsEditor> scalarsToColorsEditor;
-  vtkSmartPointer<vtkContextView> histogramView;
-  vtkSmartPointer<vtkEventQtSlotConnect> eventLink;
-
-  vtkSmartPointer<vtkScalarsToColors> colorTransferFunction;
-
-  vtkSmartPointer<vtkTable> histogramTable;
-
-	vtkPiecewiseFunction* scalarOpacityFunction = nullptr;
-
-	QToolButton* gradientOpacityButton = nullptr;
-
-	QVTKWidget* qvtk;
-
-	//Option part
-	QComboBox* lutSelector;
-	QToolButton* nanButton;
-	QCheckBox* discretizeCheck;
-	QSpinBox* classesDiscret;
-
-	QLineEdit* minRange;
-	QLineEdit* maxRange;
-
-	double dataRange[2];
-	double dataMean;
 };
 #endif // __ctkVTKDiscretizableColorTransferWidget_h
