@@ -138,7 +138,7 @@ endif()
 
 
 
-target_link_libraries(${KIT}CppTests ${LIBRARY_NAME} ${VTK_CHARTS_LIB} ${CTK_BASE_LIBRARIES} CTKQtTesting)
+target_link_libraries(${KIT}CppTests ${LIBRARY_NAME} ${VTK_CHARTS_LIB} ${CTK_BASE_LIBRARIES})
 
 if(CTK_QT_VERSION VERSION_GREATER "4")
   target_link_libraries(${KIT}CppTests ${Qt5Test_LIBRARIES})
