@@ -119,6 +119,8 @@ if(${CTK_USE_CHARTS})
   set(KIT_SRCS
     ctkVTKCompositeTransferFunctionChart.cpp
     ctkVTKCompositeTransferFunctionChart.h
+	ctkVTKDiscretizableColorTransferControlPointsItem.cpp
+	ctkVTKDiscretizableColorTransferControlPointsItem.h
     ctkVTKHistogramChart.cpp
     ctkVTKHistogramChart.h
 	ctkVTKHistogramMarker.cpp

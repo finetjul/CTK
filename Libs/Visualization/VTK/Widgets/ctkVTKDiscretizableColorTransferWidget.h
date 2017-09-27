@@ -31,7 +31,7 @@ class vtkImageAccumulate;
 class ctkVTKScalarsToColorsComboBox;
 class ctkVTKScalarsToColorsEditor;
 
-class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKDiscretizableColorTransferWidget: public QWidget {
+class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKDiscretizableColorTransferWidget: public QWidget{
 Q_OBJECT
 public:
 	explicit ctkVTKDiscretizableColorTransferWidget(QWidget* parent_ = nullptr);

@@ -31,8 +31,6 @@ ctkVTKHistogramMarker::ctkVTKHistogramMarker() {
 
 	m_table->SetValue(1, 0, 55);
 	m_table->SetValue(1, 1, 1);
-
-
 }
 
 vtkSmartPointer<vtkTable> ctkVTKHistogramMarker::getTable() {
@@ -45,7 +43,6 @@ void ctkVTKHistogramMarker::SetPosition(double pos) {
 	m_table->Modified();
 }
 
-ctkVTKHistogramMarker::~ctkVTKHistogramMarker() {
-
-	// TODO Auto-generated destructor stub
+ctkVTKHistogramMarker::~ctkVTKHistogramMarker()
+{
 }
