@@ -1,7 +1,7 @@
 #ifndef __ctkVTKScalarsToColorsEditor_h
 #define __ctkVTKScalarsToColorsEditor_h
 
-#include "ctkVisualizationVTKWidgetsExport.h"
+#include "ctkVisualizationVTKCoreExport.h"
 
 #include <vtkAbstractContextItem.h>
 #include <vtkNew.h>
@@ -29,12 +29,12 @@ class ctkVTKScalarsToColorsPreviewChart;
 
 // This class is a chart that combines a histogram from a data set
 // a color bar editor, and an opacity editor.
-class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKScalarsToColorsEditor: public vtkAbstractContextItem {
+class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKScalarsToColorsEditor
+  : public vtkAbstractContextItem
+{
 public:
-  vtkTypeMacro(
-    ctkVTKScalarsToColorsEditor,
-    vtkAbstractContextItem)
-    static ctkVTKScalarsToColorsEditor* New();
+  vtkTypeMacro(ctkVTKScalarsToColorsEditor, vtkAbstractContextItem)
+  static ctkVTKScalarsToColorsEditor* New();
 
   void SetColorTransfertFunction(vtkSmartPointer<vtkScalarsToColors> ctf);
   vtkSmartPointer<vtkScalarsToColors> GetColorTransfertFunction();
@@ -65,7 +65,6 @@ protected:
 	double dataRangeMax;
 
 private:
-
   ctkVTKScalarsToColorsEditor();
   ~ctkVTKScalarsToColorsEditor() override;
 
@@ -77,4 +76,4 @@ private:
   class EventForwarder;
     EventForwarder* PrivateEventForwarder;
 };
-#endif // tomvizvtkChartHistogramColorOpacityEditor_h
+#endif // __ctkVTKScalarsToColorsEditor_h

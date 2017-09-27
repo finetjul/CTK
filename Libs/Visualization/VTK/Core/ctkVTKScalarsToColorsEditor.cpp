@@ -1,4 +1,4 @@
-#include <ctkVTKCompositeTransfertFunctionChart.h>
+#include <ctkVTKCompositeTransferFunctionChart.h>
 #include <ctkVTKScalarsToColorsPreviewChart.h>
 #include <ctkVTKHistogramChart.h>
 #include <ctkVTKScalarsToColorsEditor.h>

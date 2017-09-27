@@ -31,18 +31,12 @@ set(KIT_SRCS
   ctkVTKColorTransferFunction.h
   ctkVTKCompositeFunction.cpp
   ctkVTKCompositeFunction.h
-  ctkVTKCompositeTransfertFunctionChart.cpp
-  ctkVTKCompositeTransfertFunctionChart.h
   ctkVTKDataSetModel.cpp
   ctkVTKDataSetModel.h
   ctkVTKDataSetArrayComboBox.cpp
   ctkVTKDataSetArrayComboBox.h
   ctkVTKHistogram.cpp
   ctkVTKHistogram.h
-  ctkVTKHistogramChart.cpp
-  ctkVTKHistogramChart.h
-  ctkVTKHistogramMarker.cpp
-  ctkVTKHistogramMarker.h
   ctkVTKLookupTable.cpp
   ctkVTKLookupTable.h
   ctkVTKMagnifyView.cpp
@@ -76,8 +70,6 @@ set(KIT_SRCS
   ctkVTKThumbnailView.h
   ctkVTKWidgetsUtils.cpp
   ctkVTKWidgetsUtils.h
-  MuratUtil.cpp
-  MuratUtil.h
   MuratHistogramWidget.cpp
   MuratHistogramWidget.h
   )
@@ -162,10 +154,6 @@ if(${CTK_USE_CHARTS})
       ctkVTKChartView.h
       ctkVTKVolumePropertyWidget.cpp
       ctkVTKVolumePropertyWidget.h
-	  ctkVTKScalarsToColorsEditor.cpp
-      ctkVTKScalarsToColorsEditor.h
-	  ctkVTKScalarsToColorsPreviewChart.cpp
-      ctkVTKScalarsToColorsPreviewChart.h
       ctkVTKScalarsToColorsView.cpp
       ctkVTKScalarsToColorsView.h
       ctkVTKScalarsToColorsWidget.cpp

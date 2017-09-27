@@ -1,24 +1,19 @@
-#ifndef muratvtkChartHistogram_h
-#define muratvtkChartHistogram_h
+#ifndef __ctkVTKHistogramChart_h
+#define __ctkVTKHistogramChart_h
+
+#include "ctkVisualizationVTKCoreExport.h"
 
 #include <vtkChartXY.h>
-
 #include <vtkNew.h>
 #include <vtkTransform2D.h>
 
-class vtkContextMouseEvent;
-
-class vtkPiecewiseFunction;
-class vtkPiecewiseFunctionItem;
 class vtkPlotBar;
 class vtkScalarsToColors;
 class vtkTable;
 
-class vtkCallbackCommand;
-
-
-class ctkVTKHistogramChart: public vtkChartXY {
+class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKHistogramChart: public vtkChartXY {
 public:
+  vtkTypeMacro(ctkVTKHistogramChart, vtkChartXY)
 	static ctkVTKHistogramChart* New();
 
 	// Set input for histogram
@@ -34,7 +29,6 @@ public:
 	// Set the color array name
 	virtual void SelectColorArray(const char* arrayName);
 
-
 protected:
 	vtkNew<vtkPlotBar> HistogramPlotBar;
 
@@ -43,4 +37,4 @@ private:
 	virtual ~ctkVTKHistogramChart();
 };
 
-#endif // tomvizvtkChartHistogram_h
+#endif // __ctkVTKHistogramChart_h

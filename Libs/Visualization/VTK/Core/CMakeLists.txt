@@ -18,7 +18,6 @@ endif()
 
 set(KIT_export_directive "CTK_VISUALIZATION_VTK_CORE_EXPORT")
 
-
 # Source files
 set(KIT_SRCS
   ctkVTKConnection.cpp
@@ -28,6 +27,8 @@ set(KIT_SRCS
   ctkVTKObject.h
   ctkVTKObjectEventsObserver.cpp
   ctkVTKObjectEventsObserver.h
+  MuratUtil.cpp
+  MuratUtil.h
   vtkLightBoxRendererManager.cpp
   vtkLightBoxRendererManager.h
   )
@@ -76,6 +77,9 @@ if(${VTK_VERSION_MAJOR} GREATER 5)
   if(TARGET vtkRendering${VTK_RENDERING_BACKEND})
     list(APPEND VTK_LIBRARIES vtkRendering${VTK_RENDERING_BACKEND})
   endif()
+  if(TARGET vtkRenderingContext${VTK_RENDERING_BACKEND})
+    list(APPEND VTK_LIBRARIES vtkRenderingContext${VTK_RENDERING_BACKEND})
+  endif()
   if(TARGET vtkIOMPIImage)
     list(APPEND VTK_LIBRARIES vtkIOMPIImage )
   endif()
@@ -104,6 +108,35 @@ else()
     vtkRendering
     vtkHybrid
     )
+endif()
+
+if(CTK_LIB_Visualization/VTK/Widgets_USE_TRANSFER_FUNCTION_CHARTS)
+  set(CTK_USE_CHARTS 1)
+endif()
+
+if(${CTK_USE_CHARTS})
+  set(KIT_SRCS
+    ctkVTKCompositeTransferFunctionChart.cpp
+    ctkVTKCompositeTransferFunctionChart.h
+    ctkVTKHistogramChart.cpp
+    ctkVTKHistogramChart.h
+	ctkVTKHistogramMarker.cpp
+    ctkVTKHistogramMarker.h
+    ctkVTKScalarsToColorsEditor.cpp
+    ctkVTKScalarsToColorsEditor.h
+	ctkVTKScalarsToColorsPreviewChart.cpp
+    ctkVTKScalarsToColorsPreviewChart.h
+    ${KIT_SRCS})
+  if(${VTK_VERSION_MAJOR} GREATER 5)
+    set(VTK_LIBRARIES
+      vtkChartsCore
+      ${VTK_LIBRARIES})
+  else()
+    set(VTK_LIBRARIES
+      vtkCharts
+      ${VTK_LIBRARIES})
+  endif()
+  add_definitions(-DCTK_USE_CHARTS)
 endif()
 
 if(CTK_LIB_Scripting/Python/Core AND CTK_LIB_Scripting/Python/Core_PYTHONQT_USE_VTK)

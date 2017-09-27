@@ -5,7 +5,7 @@
  *      Author: a
  */
 
-#include <ctkVTKCompositeTransfertFunctionChart.h>
+#include <ctkVTKCompositeTransferFunctionChart.h>
 #include <vtkCompositeTransferFunctionItem.h>
 #include <vtkCompositeControlPointsItem.h>
 #include <ctkVTKHistogramMarker.h>
@@ -333,4 +333,10 @@ void ctkVTKCompositeTransfertFunctionChart::CenterRange(double center) {
 	double newMax = newMin + width;
 
 	SetCurrentRange(newMin, newMax);
+}
+
+vtkSmartPointer<vtkCompositeControlPointsItem>
+  ctkVTKCompositeTransfertFunctionChart::GetControlPointsItem()
+{
+  return controlPoints;
 }

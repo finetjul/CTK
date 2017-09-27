@@ -8,6 +8,8 @@
 #ifndef __ctkVTKCompositeTransfertFunctionChart_h
 #define __ctkVTKCompositeTransfertFunctionChart_h
 
+#include "ctkVisualizationVTKCoreExport.h"
+
 #include <vtkChartXY.h>
 #include <vtkSmartPointer.h>
 #include <vtkNew.h>
@@ -19,19 +21,19 @@ class vtkDiscretizableColorTransferFunction;
 class vtkCompositeControlPointsItem;
 
 class ctkVTKHistogramMarker;
-//class vtkMuratCustomCompositeControlPointsItem;
 
-class ctkVTKCompositeTransfertFunctionChart : public vtkChartXY {
+class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKCompositeTransfertFunctionChart
+  : public vtkChartXY
+{
 public:
+  vtkTypeMacro(ctkVTKCompositeTransfertFunctionChart, vtkChartXY)
   static ctkVTKCompositeTransfertFunctionChart* New();
 
   bool MouseDoubleClickEvent(const vtkContextMouseEvent& mouse) override;
 
   virtual bool MouseMoveEvent(const vtkContextMouseEvent &mouse) override;
-  virtual bool MouseButtonPressEvent(const vtkContextMouseEvent& mouse)
-    override;
-  virtual bool MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse)
-    override;
+  virtual bool MouseButtonPressEvent(const vtkContextMouseEvent& mouse) override;
+  virtual bool MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) override;
 
   void SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function);
   void SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function, double dataRangeMin, double dataRangeMax);
@@ -54,10 +56,7 @@ public:
   */
   void CenterRange(double center);
 
-  vtkSmartPointer<vtkCompositeControlPointsItem> GetControlPointsItem()
-  {
-    return controlPoints;
-  }
+  vtkSmartPointer<vtkCompositeControlPointsItem> GetControlPointsItem();
 
 private:
   void updateMarkerPosition(const vtkContextMouseEvent& m);

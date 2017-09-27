@@ -11,10 +11,10 @@
 #include <vtkObject.h>
 #include <vtkSmartPointer.h>
 
-
 class vtkTable;
 
-class ctkVTKHistogramMarker: public vtkObject {
+class ctkVTKHistogramMarker: public vtkObject
+{
 public:
 
 	static ctkVTKHistogramMarker* New();
@@ -28,7 +28,6 @@ public:
 
 private:
 	vtkSmartPointer<vtkTable> m_table;
-
 
 };
 
