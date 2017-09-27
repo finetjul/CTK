@@ -137,19 +137,19 @@ ctkVTKDiscretizableColorTransferWidget::ctkVTKDiscretizableColorTransferWidget(Q
 	vLayoutRight->addStretch(1);
 
 	auto button = new QToolButton;
-	button->setIcon(QIcon("D:/Total/Data/pqResetRange.png"));
+	button->setIcon(QIcon(":Icons/resetRange.png"));
 	button->setToolTip("Reset to data range");
 	connect(button, SIGNAL(clicked()), this, SLOT(onResetRangeClicked()));
 	vLayoutRight->addWidget(button, Qt::AlignCenter);
 
 	button = new QToolButton;
-	button->setIcon(QIcon("D:/Total/Data/pqResetRangeCustom.png"));
+	button->setIcon(QIcon(":Icons/resetRangeCustom.png"));
 	button->setToolTip("Center current range on median");
 	connect(button, SIGNAL(clicked()), this, SLOT(onCenterRangeClicked()));
 	vLayoutRight->addWidget(button, Qt::AlignCenter);
 
 	button = new QToolButton;
-	button->setIcon(QIcon("D:\Total\Data\pqInvert.png"));
+	button->setIcon(QIcon(":Icons/invert.png"));
 	button->setToolTip("Invert color map");
 	connect(button, SIGNAL(clicked()), this, SLOT(onInvertClicked()));
 	vLayoutRight->addWidget(button, Qt::AlignCenter);
@@ -159,7 +159,7 @@ ctkVTKDiscretizableColorTransferWidget::ctkVTKDiscretizableColorTransferWidget(Q
 	auto panelLayout = new QGridLayout(optionPanel);
 
 	auto optionButton = new QToolButton;
-	optionButton->setIcon(QIcon("D:/Total/Data/pqOptions.png"));
+	optionButton->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView, nullptr, optionButton));
 	optionButton->setToolTip("Other options");
 
 	vLayoutRight->addWidget(optionButton, Qt::AlignCenter);

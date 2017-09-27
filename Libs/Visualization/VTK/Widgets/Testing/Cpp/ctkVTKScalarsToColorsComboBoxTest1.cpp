@@ -27,8 +27,9 @@
 #include "ctkVTKScalarsToColorsComboBox.h"
 
 // VTK includes
-#include "vtkDiscretizableColorTransferFunction.h"
-#include "vtkPiecewiseFunction.h"
+#include <vtkDiscretizableColorTransferFunction.h>
+#include <vtkNew.h>
+#include <vtkPiecewiseFunction.h>
 
 // STD includes
 
@@ -38,24 +39,15 @@ int ctkVTKScalarsToColorsComboBoxTest1(int argc, char * argv [] )
   QApplication app(argc, argv);
 
   ctkVTKScalarsToColorsComboBox scalarsToColorsComboBox;
-  scalarsToColorsComboBox.setFixedHeight(25);
-  scalarsToColorsComboBox.setDefaultText("Select color transfer function ...");
-  scalarsToColorsComboBox.setCurrentIndex(-1);//Start with default
-
-  if (scalarsToColorsComboBox.count() != 1)
-  {
-    std::cerr << "Line " << __LINE__ << " - Expected 1 items in the combobox\n"
-      "\tCurrent count: " << scalarsToColorsComboBox.count() << "\n";
-    return EXIT_FAILURE;
-  }
+  //scalarsToColorsComboBox.setFixedHeight(25);
+  //scalarsToColorsComboBox.setDefaultText("Select color transfer function ...");
+  //scalarsToColorsComboBox.setCurrentIndex(-1);//Start with default
 
   //Dummy presets
-  vtkSmartPointer<vtkDiscretizableColorTransferFunction> discretizableCTF =
-    vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
+  vtkNew<vtkDiscretizableColorTransferFunction> discretizableCTF;
   discretizableCTF->AddRGBPoint(0.0, 0, 0, 1.0);
   discretizableCTF->AddRGBPoint(255.0, 1.0, 0, 0);
-  vtkSmartPointer<vtkPiecewiseFunction> piecewiseFunction =
-    vtkSmartPointer<vtkPiecewiseFunction>::New();
+  vtkNew<vtkPiecewiseFunction> piecewiseFunction;
   piecewiseFunction->AddPoint(0.0, 0);
   piecewiseFunction->AddPoint(255.0, 1.0);
   discretizableCTF->SetScalarOpacityFunction(piecewiseFunction);
@@ -65,17 +57,16 @@ int ctkVTKScalarsToColorsComboBoxTest1(int argc, char * argv [] )
   colorTransferFunction->AddRGBPoint(255, 0, 0, 1.0);
   colorTransferFunction->AddRGBPoint(0, 1.0, 0, 0);
 
-  scalarsToColorsComboBox.addScalarsToColors("ColorTransferFunctionTest1",
-    discretizableCTF.Get());
-  scalarsToColorsComboBox.addScalarsToColors("ColorTransferFunctionTest2",
-    colorTransferFunction.Get());
+  scalarsToColorsComboBox.addScalarsToColors(discretizableCTF.Get(), "ColorTransferFunctionTest1");
+  scalarsToColorsComboBox.addScalarsToColors(colorTransferFunction.Get(), "ColorTransferFunctionTest2");
 
-  if (scalarsToColorsComboBox.count() != 3)
+  if (scalarsToColorsComboBox.count() != 2)
   {
-    std::cerr << "Line " << __LINE__ << " - Expected 3 items in the combobox\n"
+    std::cerr << "Line " << __LINE__ << " - Expected 2 items in the combobox\n"
       "\tCurrent count: " << scalarsToColorsComboBox.count() << "\n";
     return EXIT_FAILURE;
   }
+  scalarsToColorsComboBox.addScalarsToColors(nullptr, "(none)");
 
   scalarsToColorsComboBox.show();
 
