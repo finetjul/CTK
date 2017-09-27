@@ -1,5 +1,5 @@
-#ifndef muratHistogramWidget_h
-#define muratHistogramWidget_h
+#ifndef __ctkVTKDiscretizableColorTransferWidget_h
+#define __ctkVTKDiscretizableColorTransferWidget_h
 
 #include <QWidget>
 #include <QMetaType>
@@ -31,12 +31,13 @@ class vtkImageAccumulate;
 class ctkVTKScalarsToColorsComboBox;
 class ctkVTKScalarsToColorsEditor;
 
-class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT MuratHistogramWidget: public QWidget {
+class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKDiscretizableColorTransferWidget: public QWidget {
 Q_OBJECT
 public:
-	explicit MuratHistogramWidget(QWidget* parent_ = nullptr);
-	~MuratHistogramWidget() override;
+	explicit ctkVTKDiscretizableColorTransferWidget(QWidget* parent_ = nullptr);
+	~ctkVTKDiscretizableColorTransferWidget() override;
 
+  void SetColorTransferFunction(vtkScalarsToColors* ctf);
   void SetHistogramTable(vtkTable* histogram);
 
 signals:
@@ -60,7 +61,7 @@ public slots:
 	void onInvertClicked();
 	void onRangeEditorReturn();
 
-  void onPaletteIndexChanged(vtkSmartPointer<vtkScalarsToColors>  ctf);
+  void onPaletteIndexChanged(vtkScalarsToColors* ctf);
   void onHistogramDataModified(vtkTable* histogramTable);
 
 
@@ -72,7 +73,7 @@ private:
 	vtkNew<vtkContextView> histogramView;
 	vtkNew<vtkEventQtSlotConnect> eventLink;
 
-  vtkNew<vtkScalarsToColors> colorTransferFunction;
+  vtkSmartPointer<vtkScalarsToColors> colorTransferFunction;
 
   vtkSmartPointer<vtkTable> histogramTable;
 
@@ -94,4 +95,4 @@ private:
 	double dataRange[2];
 	double dataMean;
 };
-#endif // tomvizHistogramWidget_h
+#endif // __ctkVTKDiscretizableColorTransferWidget_h

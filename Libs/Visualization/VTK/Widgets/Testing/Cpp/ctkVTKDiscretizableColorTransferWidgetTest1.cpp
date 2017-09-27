@@ -24,31 +24,49 @@
 #include <QTimer>
 
 // CTK includes
-#include "ctkVTKScalarsToColorsPreviewChart.h"
+#include "ctkVTKDiscretizableColorTransferWidget.h"
 
 // VTK includes
 #include <QVTKWidget.h>
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
+#include <vtkDoubleArray.h>
+#include <vtkIntArray.h>
 #include <vtkDiscretizableColorTransferFunction.h>
 #include <vtkNew.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkRenderWindow.h>
+#include <vtkTable.h>
 
 // STD includes
 
 //-----------------------------------------------------------------------------
-int ctkVTKScalarsToColorsPreviewChartTest1(int argc, char * argv [] )
+int ctkVTKDiscretizableColorTransferWidgetTest1(int argc, char * argv [] )
 {
   QApplication app(argc, argv);
 
-  vtkNew<ctkVTKScalarsToColorsPreviewChart> previewChart;
-  QVTKWidget qWidget;
-  qWidget.show();
-  vtkNew<vtkContextView> contextView;
-  contextView->GetScene()->AddItem(previewChart.Get());
-  contextView->SetInteractor(qWidget.GetInteractor());
-  qWidget.SetRenderWindow(contextView->GetRenderWindow());
+  vtkSmartPointer<vtkDoubleArray> bins = vtkSmartPointer<vtkDoubleArray>::New();
+  bins->SetNumberOfComponents(1);
+  bins->SetNumberOfTuples(255);
+  bins->SetName("image_extents");
+  vtkSmartPointer<vtkIntArray> frequencies = vtkSmartPointer<vtkIntArray>::New();
+  frequencies->SetNumberOfComponents(1);
+  frequencies->SetNumberOfTuples(255);
+  frequencies->SetName("Frequency");
+
+  double spacing = 1;
+  double bin = 0;
+
+  for (unsigned int j = 0; j < 255; ++j)
+  {
+    bins->SetTuple1(j, bin);
+    bin += spacing;
+    frequencies->SetTuple1(j, j);
+  }
+
+  vtkNew<vtkTable> table;
+  table->AddColumn(bins);
+  table->AddColumn(frequencies);
 
   //Dummy presets
   vtkNew<vtkDiscretizableColorTransferFunction> discretizableCTF;
@@ -60,9 +78,10 @@ int ctkVTKScalarsToColorsPreviewChartTest1(int argc, char * argv [] )
   discretizableCTF->SetScalarOpacityFunction(piecewiseFunction.Get());
   discretizableCTF->EnableOpacityMappingOn();
 
-  previewChart->SetColorTransferFunction(discretizableCTF.Get());
-
-  contextView->GetRenderWindow()->Render();
+  ctkVTKDiscretizableColorTransferWidget mWidget;
+  mWidget.SetColorTransferFunction(discretizableCTF.Get());
+  mWidget.SetHistogramTable(table.Get());
+  mWidget.show();
 
   if (argc < 2 || QString(argv[1]) != "-I")
   {

@@ -14,7 +14,7 @@
 
  ******************************************************************************/
 //#include <init/ColorTableRegistry.h>
-#include "MuratHistogramWidget.h"
+#include "ctkVTKDiscretizableColorTransferWidget.h"
 
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
@@ -89,7 +89,7 @@ protected:
 	}
 };
 
-MuratHistogramWidget::MuratHistogramWidget(QWidget* parent) :
+ctkVTKDiscretizableColorTransferWidget::ctkVTKDiscretizableColorTransferWidget(QWidget* parent) :
 		QWidget(parent), qvtk(new QVTKWidget(this))
 {
   histogramView->GetScene()->AddItem(scalarsToColorsEditor.Get());
@@ -215,8 +215,8 @@ MuratHistogramWidget::MuratHistogramWidget(QWidget* parent) :
 //	});
 	connect(minRange, SIGNAL(returnPressed()), this, SLOT(onRangeEditorReturn()));
 	connect(maxRange, SIGNAL(returnPressed()), this, SLOT(onRangeEditorReturn()));
-  connect(scalarsToColorsSelector, SIGNAL(currentScalarsToColorsChanged(vtkSmartPointer<vtkScalarsToColors> )),
-    this, SLOT(onPaletteIndexChanged(vtkSmartPointer<vtkScalarsToColors> )));
+  connect(scalarsToColorsSelector, SIGNAL(currentScalarsToColorsChanged(vtkScalarsToColors*)),
+    this, SLOT(onPaletteIndexChanged(vtkScalarsToColors*)));
 
 	auto hRangeLayout = new QHBoxLayout;
 	hRangeLayout->addWidget(minLabel);
@@ -234,22 +234,29 @@ MuratHistogramWidget::MuratHistogramWidget(QWidget* parent) :
   setLayout(vGlobalLayout);
 }
 
-void MuratHistogramWidget::SetHistogramTable(vtkTable* hTable)
+void ctkVTKDiscretizableColorTransferWidget::SetColorTransferFunction(vtkScalarsToColors* ctf)
 {
-  this->histogramTable.TakeReference(hTable);
+  this->colorTransferFunction = ctf;
+  this->scalarsToColorsEditor->SetColorTransfertFunction(ctf);
+}
+
+void ctkVTKDiscretizableColorTransferWidget::SetHistogramTable(vtkTable* hTable)
+{
+  this->histogramTable = hTable;
   this->scalarsToColorsEditor->SetHistogramTable(hTable,
     "image_extents", "Frequency");
+
   qvtk->GetRenderWindow()->Render();
 }
 
-void MuratHistogramWidget::onScalarOpacityFunctionChanged()
+void ctkVTKDiscretizableColorTransferWidget::onScalarOpacityFunctionChanged()
 {
   std::cout << "onScalarOpacityFunctionChanged" << std::endl;
   // Update the histogram
   qvtk->GetRenderWindow()->Render();
 }
 
-void MuratHistogramWidget::onPaletteIndexChanged(vtkSmartPointer<vtkScalarsToColors> ctf)
+void ctkVTKDiscretizableColorTransferWidget::onPaletteIndexChanged(vtkScalarsToColors* ctf)
 {
   //Setting the transfer function to the scalarsToColorsEditor results
   // in converting ctf to a vtkDiscretizableTransferFunction
@@ -262,7 +269,7 @@ void MuratHistogramWidget::onPaletteIndexChanged(vtkSmartPointer<vtkScalarsToCol
   qvtk->GetRenderWindow()->Render();
 }
 
-void MuratHistogramWidget::onHistogramDataModified(vtkTable* hTable)
+void ctkVTKDiscretizableColorTransferWidget::onHistogramDataModified(vtkTable* hTable)
 {
   this->scalarsToColorsEditor->SetHistogramTable(hTable,
     "image_extents", "Frequency");
@@ -270,22 +277,22 @@ void MuratHistogramWidget::onHistogramDataModified(vtkTable* hTable)
   qvtk->GetRenderWindow()->Render();
 }
 
-void MuratHistogramWidget::transparencyChanged(int value100) {
+void ctkVTKDiscretizableColorTransferWidget::transparencyChanged(int value100) {
 	//MuratUtil::setTransparency(LUT, ((double) value100) / 100.0);
 	onScalarOpacityFunctionChanged();
 }
 
-QIcon MuratHistogramWidget::getColorIcon(QColor color) {
+QIcon ctkVTKDiscretizableColorTransferWidget::getColorIcon(QColor color) {
 	QPixmap pix(32, 32);
 	pix.fill(color);
 	return QIcon(pix);
 }
 
-void MuratHistogramWidget::onCurrentPointChanged()
+void ctkVTKDiscretizableColorTransferWidget::onCurrentPointChanged()
 {
 }
 
-void MuratHistogramWidget::onCurrentPointEdit() {
+void ctkVTKDiscretizableColorTransferWidget::onCurrentPointEdit() {
 	double rgb[3];
 	if (scalarsToColorsEditor->GetCurrentControlPointColor(rgb))
   {
@@ -301,28 +308,28 @@ void MuratHistogramWidget::onCurrentPointEdit() {
 	}
 }
 
-void MuratHistogramWidget::onCurrentPointModified()
+void ctkVTKDiscretizableColorTransferWidget::onCurrentPointModified()
 {
   emit(currentScalarsToColorsModified());
 }
 
-void MuratHistogramWidget::onResetRangeClicked() {
+void ctkVTKDiscretizableColorTransferWidget::onResetRangeClicked() {
   std::cout << "onResetRangeClicked" << std::endl;
 	scalarsToColorsEditor->SetCurrentRange(dataRange[0], dataRange[1]);
 }
 
-void MuratHistogramWidget::onCenterRangeClicked() {
+void ctkVTKDiscretizableColorTransferWidget::onCenterRangeClicked() {
   std::cout << "onCenterRangeClicked" << std::endl;
 	scalarsToColorsEditor->CenterRange(dataMean);
 }
 
-void MuratHistogramWidget::onInvertClicked() {
+void ctkVTKDiscretizableColorTransferWidget::onInvertClicked() {
   std::cout << "onInvertClicked" << std::endl;
 	//MuratUtil::reverseColorMap(LUT);
   qvtk->GetRenderWindow()->Render();
 }
 
-void MuratHistogramWidget::onColorFunctionChanged() {
+void ctkVTKDiscretizableColorTransferWidget::onColorFunctionChanged() {
   std::cout << "onColorFunctionChanged" << std::endl;
 	//double range[2];
 	//colorTransferFunction->GetRange(range);
@@ -330,7 +337,7 @@ void MuratHistogramWidget::onColorFunctionChanged() {
 	//maxRange->setText(QString::number(range[1]));
 }
 
-void MuratHistogramWidget::onRangeEditorReturn() {
+void ctkVTKDiscretizableColorTransferWidget::onRangeEditorReturn() {
   std::cout << "onRangeEditorReturn" << std::endl;
 	double min = minRange->text().toDouble();
 	double max = maxRange->text().toDouble();
@@ -343,15 +350,6 @@ struct Delegate: public QStyledItemDelegate {
 	Delegate(QObject* parent = nullptr) :
 			QStyledItemDelegate(parent) {
 	}
-//	void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const {
-//		auto o = option;
-//		o.decorationSize.setWidth(ICON_WIDTH);
-//		o.decorationSize.setHeight(ICON_HEIGHT);
-//		initStyleOption(&o, index);
-
-//		auto style = o.widget ? o.widget->style() : QApplication::style();
-//		style->drawControl(QStyle::CE_ItemViewItem, &o, painter, o.widget);
-//	}
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 	{
 		return QSize(ICON_WIDTH, ICON_HEIGHT);
@@ -359,5 +357,5 @@ struct Delegate: public QStyledItemDelegate {
 
 };
 
-MuratHistogramWidget::~MuratHistogramWidget() = default;
+ctkVTKDiscretizableColorTransferWidget::~ctkVTKDiscretizableColorTransferWidget() = default;
 

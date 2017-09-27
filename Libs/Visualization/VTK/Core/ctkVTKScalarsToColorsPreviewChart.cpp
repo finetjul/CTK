@@ -51,6 +51,14 @@ void ctkVTKScalarsToColorsPreviewChart::SetColorTransferFunction(vtkColorTransfe
 
 void ctkVTKScalarsToColorsPreviewChart::SetColorTransferFunction(vtkSmartPointer<vtkColorTransferFunction> function)
 {
+  if (function == nullptr)
+  {
+    vtkSmartPointer<vtkColorTransferFunction> ctf =
+      vtkSmartPointer<vtkColorTransferFunction>::New();
+    this->SetColorTransferFunction(ctf, 0, 255);
+    return;
+  }
+
   this->SetColorTransferFunction(function, function->GetRange()[0], function->GetRange()[1]);
 }
 

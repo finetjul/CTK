@@ -52,32 +52,7 @@ ctkVTKScalarsToColorsEditor::ctkVTKScalarsToColorsEditor()
 	this->Borders[vtkAxis::RIGHT] = 8;
 	this->Borders[vtkAxis::TOP] = 8;
 
-  this->LastSceneSize = vtkVector2i(0,0);
-
-	//------------------------------------------------------------------------------------
-  // Create transfer default transfert function.
-	colorTransferFunction = vtkSmartPointer<
-            vtkDiscretizableColorTransferFunction>::New();
-
-	colorTransferFunction->SetColorSpaceToHSV();
-	colorTransferFunction->HSVWrapOn();
-	colorTransferFunction->DiscretizeOff();
-  colorTransferFunction->AddHSVSegment(0., 0., 1., 1., 0.3333, 0.3333,
-    1., 1.);
-  colorTransferFunction->AddHSVSegment(0.3333, 0.3333, 1., 1., 0.6666, 0.6666,
-    1., 1.);
-  colorTransferFunction->AddHSVSegment(0.6666, 0.6666, 1., 1., 1., 0.,
-    1., 1.);
-
-  vtkSmartPointer<vtkPiecewiseFunction> opacityFunction =
-    vtkSmartPointer<vtkPiecewiseFunction>::New();
-  opacityFunction->AddPoint(0.0, 0.1);
-  opacityFunction->AddPoint(0.5, 0.5);
-  opacityFunction->AddPoint(1., 1.);
-  colorTransferFunction->SetScalarOpacityFunction(opacityFunction);
-  colorTransferFunction->EnableOpacityMappingOn();
-
-	colorTransferFunction->Build();
+  this->LastSceneSize = vtkVector2i(0, 0);
 
   vtkSmartPointer<vtkBrush> b = vtkSmartPointer<vtkBrush>::New();
   b->SetOpacityF(0);
@@ -179,6 +154,7 @@ vtkSmartPointer<vtkScalarsToColors> ctkVTKScalarsToColorsEditor::GetColorTransfe
 void ctkVTKScalarsToColorsEditor::SetHistogramTable(vtkTable* table, const char* xAxisColumn, const char* yAxisColumn)
 {
   histogramChart->SetHistogramInputData(table, xAxisColumn, yAxisColumn);
+  histogramChart->SetLookupTable(colorTransferFunction);
 }
 
 void ctkVTKScalarsToColorsEditor::SetCurrentRange(double min, double max){

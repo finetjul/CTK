@@ -70,8 +70,6 @@ set(KIT_SRCS
   ctkVTKThumbnailView.h
   ctkVTKWidgetsUtils.cpp
   ctkVTKWidgetsUtils.h
-  MuratHistogramWidget.cpp
-  MuratHistogramWidget.h
   )
 
 # Headers that should run through moc
@@ -100,7 +98,6 @@ set(KIT_MOC_SRCS
   ctkVTKTextPropertyWidget.h
   ctkVTKThresholdWidget.h
   ctkVTKThumbnailView.h
-  MuratHistogramWidget.h
   )
 
 # UI files
@@ -152,6 +149,8 @@ if(${CTK_USE_CHARTS})
   set(KIT_SRCS
       ctkVTKChartView.cpp
       ctkVTKChartView.h
+	  ctkVTKDiscretizableColorTransferWidget.h
+	  ctkVTKDiscretizableColorTransferWidget.cpp
       ctkVTKVolumePropertyWidget.cpp
       ctkVTKVolumePropertyWidget.h
       ctkVTKScalarsToColorsView.cpp
@@ -161,6 +160,7 @@ if(${CTK_USE_CHARTS})
       ${KIT_SRCS})
   set(KIT_MOC_SRCS
       ctkVTKChartView.h
+	  ctkVTKDiscretizableColorTransferWidget.h
       ctkVTKVolumePropertyWidget.h
       ctkVTKScalarsToColorsView.h
       ctkVTKScalarsToColorsWidget.h
