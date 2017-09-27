@@ -38,27 +38,48 @@ class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKScalarsToColorsComboBox
   : public ctkComboBox
 {
   Q_OBJECT
-
-public:
   /// Superclass typedef
   typedef ctkComboBox Superclass;
+
+  /// This property controls the current scalarsToColors item of the combobox.
+  /// \accessors currentScalarsToColors(), setCurrentScalarsToColors()
+  Q_PROPERTY(vtkScalarsToColors* currentScalarsToColors READ currentScalarsToColors WRITE setCurrentScalarsToColors NOTIFY currentScalarsToColorsChanged);
+public:
 
   /// Constructors
   explicit ctkVTKScalarsToColorsComboBox(QWidget* parent = 0);
   virtual ~ctkVTKScalarsToColorsComboBox();
 
-  void addScalarsToColors(const char* name, vtkSmartPointer<vtkScalarsToColors> ctf);
+  /// Add scalars to colors function (of any type) to the combobox.
+  /// Increment reference count of given function (if any)
+  /// Returns the index of the added function.
+  int addScalarsToColors(vtkScalarsToColors* function, const QString& text = QString());
+  vtkScalarsToColors* getScalarsToColors(int index) const;
+
+  /// Searches the combobox for the given scalarsToColors
+  /// \sa findText()
+  int findScalarsToColors(vtkScalarsToColors* scalarsToColors) const;
+
+  void removeScalarsToColors(vtkScalarsToColors* scalarsToColors);// -> hint must call QComboBox::removeItem()
+
+  /// Returns the currentScalarsToColors property value
+  /// 0 if no item is selected
+  vtkScalarsToColors* currentScalarsToColors() const;
+
+public slots:
+  ///
+  void setCurrentScalarsToColors(vtkScalarsToColors* scalarsToColors);
 
 signals:
+  /// Signal triggered when the current scalars to colors function changes.
   void currentScalarsToColorsChanged(vtkScalarsToColors*);
 
 protected slots:
   void onCurrentIndexChanged(int);
+  void onRowsAboutToBeRemoved(const QModelIndex& parent, int first, int last);
 
 protected:
   QScopedPointer<ctkVTKScalarsToColorsComboBoxPrivate> d_ptr;
-
-  std::vector<vtkSmartPointer<vtkScalarsToColors>> scalarsToColorsVector;
 
 private:
   Q_DECLARE_PRIVATE(ctkVTKScalarsToColorsComboBox);
