@@ -1,41 +1,52 @@
-/*
-* ctkVTKCompositeTransfertFunctionChart.h
-*
-*  Created on: 25 juil. 2017
-*      Author: a
-*/
+/*=========================================================================
 
-#ifndef __ctkVTKCompositeTransfertFunctionChart_h
-#define __ctkVTKCompositeTransfertFunctionChart_h
+  Library:   CTK
+
+  Copyright (c) Kitware Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=========================================================================*/
+
+#ifndef __ctkVTKCompositeTransferFunctionChart_h
+#define __ctkVTKCompositeTransferFunctionChart_h
 
 #include "ctkVisualizationVTKCoreExport.h"
 
 #include <vtkChartXY.h>
 #include <vtkSmartPointer.h>
-#include <vtkNew.h>
-#include <vtkCommand.h>
 
 class ctkVTKDiscretizableColorTransferControlPointsItem;
 class ctkVTKHistogramMarker;
-
 class vtkCompositeControlPointsItem;
 class vtkCompositeTransferFunctionItem;
-class vtkTransform2D;
 class vtkDiscretizableColorTransferFunction;
+class vtkTransform2D;
 
-class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKCompositeTransfertFunctionChart
+class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKCompositeTransferFunctionChart
   : public vtkChartXY
 {
 public:
-  vtkTypeMacro(ctkVTKCompositeTransfertFunctionChart, vtkChartXY)
-  static ctkVTKCompositeTransfertFunctionChart* New();
+  vtkTypeMacro(ctkVTKCompositeTransferFunctionChart, vtkChartXY)
+  static ctkVTKCompositeTransferFunctionChart* New();
 
   virtual bool MouseMoveEvent(const vtkContextMouseEvent &mouse) override;
   virtual bool MouseButtonPressEvent(const vtkContextMouseEvent& mouse) override;
   virtual bool MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) override;
 
   void SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function);
-  void SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function, double dataRangeMin, double dataRangeMax);
+  void SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function,
+    double dataRangeMin, double dataRangeMax);
 
   // is a currently selected control point, false otherwise.
   bool GetCurrentControlPointColor(double rgb[3]);
@@ -59,12 +70,12 @@ public:
 
 private:
   void updateMarkerPosition(const vtkContextMouseEvent& m);
-protected:
 
+protected:
   vtkSmartPointer<vtkCompositeTransferFunctionItem> compositeHiddenItem;
   vtkSmartPointer<ctkVTKDiscretizableColorTransferControlPointsItem> controlPoints;
 
-  vtkNew<vtkTransform2D> Transform;
+  vtkSmartPointer<vtkTransform2D> Transform;
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> workingFunction;
 
   vtkPlot *minPlot;
@@ -85,8 +96,8 @@ protected:
   double currentRange[2];
 
 private:
-  ctkVTKCompositeTransfertFunctionChart();
-  virtual ~ctkVTKCompositeTransfertFunctionChart();
+  ctkVTKCompositeTransferFunctionChart();
+  virtual ~ctkVTKCompositeTransferFunctionChart();
 };
 
 #endif

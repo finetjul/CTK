@@ -1,41 +1,32 @@
 #ifndef __ctkVTKDiscretizableColorTransferWidget_h
 #define __ctkVTKDiscretizableColorTransferWidget_h
 
-#include <QWidget>
-#include <QMetaType>
-
-#include <vtkNew.h>
-#include <vtkSmartPointer.h>
-
 #include "ctkVisualizationVTKWidgetsExport.h"
-#include "ctkVTKObject.h"
 
-#include <vtkDiscretizableColorTransferFunction.h>
-
-class vtkContextView;
-class vtkEventQtSlotConnect;
-class vtkPiecewiseFunction;
-class vtkObject;
-class vtkTable;
-class QToolButton;
-class QPushButton;
-class QCheckBox;
-class QSpinBox;
-class QLineEdit;
-
-class QVTKWidget;
-class QComboBox;
-
-class vtkImageAccumulate;
+#include <QWidget>
+#include <vtkSmartPointer.h>
 
 class ctkVTKScalarsToColorsComboBox;
 class ctkVTKScalarsToColorsEditor;
+class vtkContextView;
+class vtkEventQtSlotConnect;
+class vtkObject;
+class vtkPiecewiseFunction;
+class vtkScalarsToColors;
+class vtkTable;
+class QComboBox;
+class QCheckBox;
+class QLineEdit;
+class QSpinBox;
+class QToolButton;
+class QVTKWidget;
 
-class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKDiscretizableColorTransferWidget: public QWidget{
+class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKDiscretizableColorTransferWidget: public QWidget
+{
 Q_OBJECT
 public:
 	explicit ctkVTKDiscretizableColorTransferWidget(QWidget* parent_ = nullptr);
-	~ctkVTKDiscretizableColorTransferWidget() override;
+  virtual ~ctkVTKDiscretizableColorTransferWidget();
 
   void SetColorTransferFunction(vtkScalarsToColors* ctf);
   void SetHistogramTable(vtkTable* histogram);
@@ -50,7 +41,6 @@ signals:
 public slots:
 	void transparencyChanged(int value100);
 	void onScalarOpacityFunctionChanged();
-	void onColorFunctionChanged();
 
   void onCurrentPointChanged();
 	void onCurrentPointEdit();
@@ -69,9 +59,9 @@ private:
 	QIcon getColorIcon(QColor color);
 
   ctkVTKScalarsToColorsComboBox* scalarsToColorsSelector;
-  vtkNew<ctkVTKScalarsToColorsEditor> scalarsToColorsEditor;
-	vtkNew<vtkContextView> histogramView;
-	vtkNew<vtkEventQtSlotConnect> eventLink;
+  vtkSmartPointer<ctkVTKScalarsToColorsEditor> scalarsToColorsEditor;
+  vtkSmartPointer<vtkContextView> histogramView;
+  vtkSmartPointer<vtkEventQtSlotConnect> eventLink;
 
   vtkSmartPointer<vtkScalarsToColors> colorTransferFunction;
 

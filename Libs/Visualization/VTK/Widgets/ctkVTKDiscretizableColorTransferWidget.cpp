@@ -13,92 +13,67 @@
  limitations under the License.
 
  ******************************************************************************/
-//#include <init/ColorTableRegistry.h>
 #include "ctkVTKDiscretizableColorTransferWidget.h"
 
+#include <ctkVTKScalarsToColorsComboBox.h>
+#include <ctkVTKScalarsToColorsEditor.h>
+#include <QColorDialog>
+#include <QCheckBox>
+#include <QDoubleValidator>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QLineEdit>
+#include <QLabel>
+#include <QPushButton>
+#include <QSlider>
+#include <QSpinBox>
+#include <QStyledItemDelegate>
+#include <QTimer>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QVTKWidget.h>
+#include <vtkRenderWindow.h>
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
 #include <vtkControlPointsItem.h>
 #include <vtkEventQtSlotConnect.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkRenderWindow.h>
-#include <vtkVector.h>
-
-#include <QTimer>
-#include <QColorDialog>
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QSlider>
-#include <QLabel>
-#include <QSpinBox>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QDoubleValidator>
-#include <QComboBox>
-#include <QStyledItemDelegate>
-#include <QApplication>
-#include <QPainter>
-#include <QIcon>
-
-#include <QVTKWidget.h>
-#include <vtkRenderWindow.h>
-#include <QVTKInteractor.h>
-#include <vtkGenericOpenGLRenderWindow.h>
-
-#include <vtkDiscretizableColorTransferFunction.h>
-#include <QDebug>
-
-#include <QVTKWidget.h>
-#include <ctkVTKScalarsToColorsComboBox.h>
-#include <ctkVTKScalarsToColorsEditor.h>
-#include <vtkSmartPointer.h>
-#include <vtkDoubleArray.h>
-#include <vtkChartXY.h>
-#include <vtkTable.h>
-#include <vtkPlot.h>
-#include <vtkContextView.h>
-#include <vtkContextScene.h>
-
-#include "MuratUtil.h"
-#include <vtkIntArray.h>
-#include <vtkImageAccumulate.h>
-#include <vtkImageData.h>
 #include <vtkRenderer.h>
-#include <vtkContext2D.h>
+#include <vtkScalarsToColors.h>
+#include <vtkTable.h>
+#include <MuratUtil.h>
 
-#include <vtkSphereSource.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkJPEGReader.h>
-#include <vtkDataSetMapper.h>
-
-template<typename ... Args> struct SELECT {
-	template<typename C, typename R>
-	static constexpr auto OVERLOAD_OF(R (C::*pmf)(Args...)) -> decltype(pmf) {
-		return pmf;
-	}
-};
-
-class AutoSelectLineEdit: public QLineEdit {
-protected:
-	void focusInEvent(QFocusEvent* e) {
-		QLineEdit::focusInEvent(e);
-//		QTimer::singleShot(0, [this]() {selectAll();});
-	}
-};
-
-ctkVTKDiscretizableColorTransferWidget::ctkVTKDiscretizableColorTransferWidget(QWidget* parent) :
-		QWidget(parent), qvtk(new QVTKWidget(this))
+template<typename ... Args> struct SELECT
 {
-  histogramView->GetScene()->AddItem(scalarsToColorsEditor.Get());
+  template<typename C, typename R>
+  static constexpr auto OVERLOAD_OF(R (C::*pmf)(Args...)) -> decltype(pmf)
+  {
+    return pmf;
+  }
+};
 
+class AutoSelectLineEdit: public QLineEdit
+{
+protected:
+  void focusInEvent(QFocusEvent* e)
+  {
+    QLineEdit::focusInEvent(e);
+//		QTimer::singleShot(0, [this]() {selectAll();});
+  }
+};
+
+ctkVTKDiscretizableColorTransferWidget::ctkVTKDiscretizableColorTransferWidget(QWidget* parent)
+  : QWidget(parent), qvtk(new QVTKWidget(this))
+{
+  scalarsToColorsEditor = vtkSmartPointer<ctkVTKScalarsToColorsEditor>::New();
+  histogramView = vtkSmartPointer<vtkContextView> ::New();
+  eventLink = vtkSmartPointer<vtkEventQtSlotConnect>::New();
+
+  histogramView->GetScene()->AddItem(scalarsToColorsEditor.Get());
   histogramView->SetInteractor(qvtk->GetInteractor());
   qvtk->SetRenderWindow(histogramView->GetRenderWindow());
 
   histogramView->GetRenderWindow()->Render();
-
   histogramView->GetRenderer()->SetBackground(MuratUtil::BACKGROUND_COLOR);
 
   eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointEditEvent, this, SLOT(onCurrentPointEdit()));
@@ -251,7 +226,6 @@ void ctkVTKDiscretizableColorTransferWidget::SetHistogramTable(vtkTable* hTable)
 
 void ctkVTKDiscretizableColorTransferWidget::onScalarOpacityFunctionChanged()
 {
-  std::cout << "onScalarOpacityFunctionChanged" << std::endl;
   // Update the histogram
   qvtk->GetRenderWindow()->Render();
 }
@@ -277,12 +251,14 @@ void ctkVTKDiscretizableColorTransferWidget::onHistogramDataModified(vtkTable* h
   qvtk->GetRenderWindow()->Render();
 }
 
-void ctkVTKDiscretizableColorTransferWidget::transparencyChanged(int value100) {
+void ctkVTKDiscretizableColorTransferWidget::transparencyChanged(int value100)
+{
 	//MuratUtil::setTransparency(LUT, ((double) value100) / 100.0);
 	onScalarOpacityFunctionChanged();
 }
 
-QIcon ctkVTKDiscretizableColorTransferWidget::getColorIcon(QColor color) {
+QIcon ctkVTKDiscretizableColorTransferWidget::getColorIcon(QColor color)
+{
 	QPixmap pix(32, 32);
 	pix.fill(color);
 	return QIcon(pix);
@@ -292,7 +268,8 @@ void ctkVTKDiscretizableColorTransferWidget::onCurrentPointChanged()
 {
 }
 
-void ctkVTKDiscretizableColorTransferWidget::onCurrentPointEdit() {
+void ctkVTKDiscretizableColorTransferWidget::onCurrentPointEdit()
+{
 	double rgb[3];
 	if (scalarsToColorsEditor->GetCurrentControlPointColor(rgb))
   {
@@ -313,49 +290,43 @@ void ctkVTKDiscretizableColorTransferWidget::onCurrentPointModified()
   emit(currentScalarsToColorsModified());
 }
 
-void ctkVTKDiscretizableColorTransferWidget::onResetRangeClicked() {
-  std::cout << "onResetRangeClicked" << std::endl;
+void ctkVTKDiscretizableColorTransferWidget::onResetRangeClicked()
+{
 	scalarsToColorsEditor->SetCurrentRange(dataRange[0], dataRange[1]);
 }
 
-void ctkVTKDiscretizableColorTransferWidget::onCenterRangeClicked() {
-  std::cout << "onCenterRangeClicked" << std::endl;
+void ctkVTKDiscretizableColorTransferWidget::onCenterRangeClicked()
+{
 	scalarsToColorsEditor->CenterRange(dataMean);
 }
 
-void ctkVTKDiscretizableColorTransferWidget::onInvertClicked() {
-  std::cout << "onInvertClicked" << std::endl;
+void ctkVTKDiscretizableColorTransferWidget::onInvertClicked()
+{
 	//MuratUtil::reverseColorMap(LUT);
   qvtk->GetRenderWindow()->Render();
 }
 
-void ctkVTKDiscretizableColorTransferWidget::onColorFunctionChanged() {
-  std::cout << "onColorFunctionChanged" << std::endl;
-	//double range[2];
-	//colorTransferFunction->GetRange(range);
-	//minRange->setText(QString::number(range[0]));
-	//maxRange->setText(QString::number(range[1]));
-}
-
-void ctkVTKDiscretizableColorTransferWidget::onRangeEditorReturn() {
-  std::cout << "onRangeEditorReturn" << std::endl;
+void ctkVTKDiscretizableColorTransferWidget::onRangeEditorReturn()
+{
 	double min = minRange->text().toDouble();
 	double max = maxRange->text().toDouble();
 	scalarsToColorsEditor->SetCurrentRange(min, max);
 }
 
-struct Delegate: public QStyledItemDelegate {
+struct Delegate: public QStyledItemDelegate
+{
 	static const int ICON_WIDTH = 120;
 	static const int ICON_HEIGHT = 20;
 	Delegate(QObject* parent = nullptr) :
-			QStyledItemDelegate(parent) {
-	}
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+      QStyledItemDelegate(parent){}
+
+  QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 	{
 		return QSize(ICON_WIDTH, ICON_HEIGHT);
 	}
-
 };
 
-ctkVTKDiscretizableColorTransferWidget::~ctkVTKDiscretizableColorTransferWidget() = default;
+ctkVTKDiscretizableColorTransferWidget::~ctkVTKDiscretizableColorTransferWidget()
+{}
+
 

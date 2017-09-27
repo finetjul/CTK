@@ -1,33 +1,44 @@
-/*
-* ctkVTKCompositeTransfertFunctionChart.cxx
-*
-*  Created on: 25 juil. 2017
-*      Author: a
-*/
+/*=========================================================================
 
-#include <ctkVTKCompositeTransferFunctionChart.h>
-#include <ctkVTKDiscretizableColorTransferControlPointsItem.h>
-#include <ctkVTKHistogramMarker.h>
+  Library:   CTK
 
-#include <vtkObjectFactory.h>
-#include <vtkPen.h>
-#include <vtkContext2D.h>
+  Copyright (c) Kitware Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=========================================================================*/
+
+#include "ctkVTKCompositeTransferFunctionChart.h"
+#include "ctkVTKDiscretizableColorTransferControlPointsItem.h"
+#include "ctkVTKHistogramMarker.h"
 #include <vtkAxis.h>
-#include <vtkTransform2D.h>
-#include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkContextMouseEvent.h>
 #include <vtkContextScene.h>
 #include <vtkCompositeTransferFunctionItem.h>
-#include <vtkTable.h>
 #include <vtkDiscretizableColorTransferFunction.h>
+#include <vtkObjectFactory.h>
+#include <vtkPen.h>
+#include <vtkTable.h>
+#include <vtkTransform2D.h>
 #include <MuratUtil.h>
-#include <vtkPlotArea.h>
 
+vtkStandardNewMacro(ctkVTKCompositeTransferFunctionChart)
 
-vtkStandardNewMacro(ctkVTKCompositeTransfertFunctionChart)
+ctkVTKCompositeTransferFunctionChart::ctkVTKCompositeTransferFunctionChart()
+{
+  Transform = vtkSmartPointer<vtkTransform2D>::New();
 
-ctkVTKCompositeTransfertFunctionChart::ctkVTKCompositeTransfertFunctionChart() {
   minMarker = vtkSmartPointer<ctkVTKHistogramMarker>::New();
   maxMarker = vtkSmartPointer<ctkVTKHistogramMarker>::New();
 
@@ -59,18 +70,20 @@ ctkVTKCompositeTransfertFunctionChart::ctkVTKCompositeTransfertFunctionChart() {
   controlPoints = nullptr;
 }
 
-void ctkVTKCompositeTransfertFunctionChart::SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function)
+void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function)
 {
   if (function == nullptr)
   {
-    this->SetColorTransferFunction(vtkNew<vtkDiscretizableColorTransferFunction>(), 0, 255);
+    vtkSmartPointer<vtkDiscretizableColorTransferFunction> emptyCtf =
+      vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
+    this->SetColorTransferFunction(emptyCtf, 0, 255);
     return;
   }
 
   this->SetColorTransferFunction(function, function->GetRange()[0], function->GetRange()[1]);
 }
 
-void ctkVTKCompositeTransfertFunctionChart::SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function,
+void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function,
   double dataRangeMin, double dataRangeMax) {
   workingFunction = function;
   ClearPlots();
@@ -160,11 +173,11 @@ void ctkVTKCompositeTransfertFunctionChart::SetColorTransferFunction(vtkDiscreti
 
 }
 
-ctkVTKCompositeTransfertFunctionChart::~ctkVTKCompositeTransfertFunctionChart()
+ctkVTKCompositeTransferFunctionChart::~ctkVTKCompositeTransferFunctionChart()
 {
 }
 
-void ctkVTKCompositeTransfertFunctionChart::updateMarkerPosition(const vtkContextMouseEvent& m)
+void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContextMouseEvent& m)
 {
   vtkVector2f pos;
   this->Transform->InverseTransformPoints(m.GetScenePos().GetData(), pos.GetData(), 1);
@@ -213,7 +226,7 @@ void ctkVTKCompositeTransfertFunctionChart::updateMarkerPosition(const vtkContex
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }
 
-bool ctkVTKCompositeTransfertFunctionChart::MouseMoveEvent(const vtkContextMouseEvent &mouse)
+bool ctkVTKCompositeTransferFunctionChart::MouseMoveEvent(const vtkContextMouseEvent &mouse)
 {
   if (mouse.GetModifiers() == vtkContextMouseEvent::CONTROL_MODIFIER)
   {
@@ -228,12 +241,12 @@ bool ctkVTKCompositeTransfertFunctionChart::MouseMoveEvent(const vtkContextMouse
   return this->Superclass::MouseMoveEvent(mouse);
 }
 
-bool ctkVTKCompositeTransfertFunctionChart_inRange(double min, double max, double value)
+bool ctkVTKCompositeTransferFunctionChart_inRange(double min, double max, double value)
 {
   return value >= min && value < max;
 }
 
-bool ctkVTKCompositeTransfertFunctionChart::MouseButtonPressEvent(const vtkContextMouseEvent& mouse)
+bool ctkVTKCompositeTransferFunctionChart::MouseButtonPressEvent(const vtkContextMouseEvent& mouse)
 {
   if (mouse.GetModifiers() == vtkContextMouseEvent::CONTROL_MODIFIER)
   {
@@ -257,11 +270,11 @@ bool ctkVTKCompositeTransfertFunctionChart::MouseButtonPressEvent(const vtkConte
 
       double catchWidth = 5;
       //If min and max get close prefer min over max
-      if (ctkVTKCompositeTransfertFunctionChart_inRange(pixelMin[0] - catchWidth, pixelMin[0] + catchWidth, mouse.GetPos().GetX()))
+      if (ctkVTKCompositeTransferFunctionChart_inRange(pixelMin[0] - catchWidth, pixelMin[0] + catchWidth, mouse.GetPos().GetX()))
       {
         rangeMoving = RangeMoving::MIN;
       }
-      else if (ctkVTKCompositeTransfertFunctionChart_inRange(pixelMax[0] - catchWidth, pixelMax[0] + catchWidth, mouse.GetPos().GetX()))
+      else if (ctkVTKCompositeTransferFunctionChart_inRange(pixelMax[0] - catchWidth, pixelMax[0] + catchWidth, mouse.GetPos().GetX()))
       {
         rangeMoving = RangeMoving::MAX;
       }
@@ -270,13 +283,13 @@ bool ctkVTKCompositeTransfertFunctionChart::MouseButtonPressEvent(const vtkConte
   return this->Superclass::MouseButtonPressEvent(mouse);
 }
 
-bool ctkVTKCompositeTransfertFunctionChart::MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) {
+bool ctkVTKCompositeTransferFunctionChart::MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) {
 
   rangeMoving = RangeMoving::NONE;
   return this->Superclass::MouseButtonReleaseEvent(mouse);
 }
 
-bool ctkVTKCompositeTransfertFunctionChart::GetCurrentControlPointColor(double rgb[3]) {
+bool ctkVTKCompositeTransferFunctionChart::GetCurrentControlPointColor(double rgb[3]) {
   vtkColorTransferFunction* ctf = this->controlPoints->GetColorTransferFunction();
   if (!ctf)
   {
@@ -298,7 +311,7 @@ bool ctkVTKCompositeTransfertFunctionChart::GetCurrentControlPointColor(double r
   return true;
 }
 
-void ctkVTKCompositeTransfertFunctionChart::SetCurrentControlPointColor(const double rgb[3]) {
+void ctkVTKCompositeTransferFunctionChart::SetCurrentControlPointColor(const double rgb[3]) {
   vtkColorTransferFunction* ctf = this->controlPoints->GetColorTransferFunction();
   if (!ctf)
   {
@@ -319,7 +332,7 @@ void ctkVTKCompositeTransfertFunctionChart::SetCurrentControlPointColor(const do
   ctf->SetNodeValue(currentIdx, xrgbms);
 }
 
-void ctkVTKCompositeTransfertFunctionChart::SetCurrentRange(double min, double max) {
+void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double max) {
   //check if min < max;
   min = vtkMath::ClampValue(min, dataRange[0], dataRange[1]);
   max = vtkMath::ClampValue(max, dataRange[0], dataRange[1]);
@@ -343,7 +356,7 @@ void ctkVTKCompositeTransfertFunctionChart::SetCurrentRange(double min, double m
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }
 
-void ctkVTKCompositeTransfertFunctionChart::CenterRange(double center) {
+void ctkVTKCompositeTransferFunctionChart::CenterRange(double center) {
   double width = currentRange[1] - currentRange[0];
   double minCenter = dataRange[0] + width / 2.0;
   double maxCenter = dataRange[1] - width / 2.0;
@@ -356,7 +369,7 @@ void ctkVTKCompositeTransfertFunctionChart::CenterRange(double center) {
 }
 
 vtkCompositeControlPointsItem*
-ctkVTKCompositeTransfertFunctionChart::GetControlPointsItem()
+ctkVTKCompositeTransferFunctionChart::GetControlPointsItem()
 {
   return controlPoints;
 }

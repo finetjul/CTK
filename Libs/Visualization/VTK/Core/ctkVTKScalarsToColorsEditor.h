@@ -1,3 +1,23 @@
+/*=========================================================================
+
+  Library:   CTK
+
+  Copyright (c) Kitware Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=========================================================================*/
+
 #ifndef __ctkVTKScalarsToColorsEditor_h
 #define __ctkVTKScalarsToColorsEditor_h
 
@@ -8,24 +28,13 @@
 #include <vtkSmartPointer.h>
 #include <vtkVector.h>
 
+class ctkVTKCompositeTransferFunctionChart;
+class ctkVTKHistogramChart;
+class ctkVTKScalarsToColorsPreviewChart;
 class vtkAxis;
-
-class vtkColorTransferControlPointsItem;
-class vtkColorTransferFunction;
-class vtkColorTransferFunctionItem;
-class vtkPiecewiseFunction;
+class vtkDiscretizableColorTransferFunction;
 class vtkScalarsToColors;
 class vtkTable;
-
-class vtkCompositeControlPointsItem;
-class vtkCompositeTransferFunctionItem;
-class vtkDiscretizableColorTransferFunction;
-class vtkCallbackCommand;
-
-
-class ctkVTKHistogramChart;
-class ctkVTKCompositeTransfertFunctionChart;
-class ctkVTKScalarsToColorsPreviewChart;
 
 // This class is a chart that combines a histogram from a data set
 // a color bar editor, and an opacity editor.
@@ -36,10 +45,10 @@ public:
   vtkTypeMacro(ctkVTKScalarsToColorsEditor, vtkAbstractContextItem)
   static ctkVTKScalarsToColorsEditor* New();
 
-  void SetColorTransfertFunction(vtkSmartPointer<vtkScalarsToColors> ctf);
+  void SetColorTransfertFunction(vtkScalarsToColors* ctf);
   vtkSmartPointer<vtkScalarsToColors> GetColorTransfertFunction();
 
-  void SetDiscretizableColorTransfertFunction(vtkSmartPointer<vtkDiscretizableColorTransferFunction> dctf);
+  void SetDiscretizableColorTransfertFunction(vtkDiscretizableColorTransferFunction* dctf);
   void SetHistogramTable(vtkTable* table, const char* xAxisColumn, const char* yAxisColumn);
 
 	// Paint event for the editor.
@@ -55,7 +64,7 @@ public:
 	void CenterRange(double center);
 
 protected:
-  vtkSmartPointer<ctkVTKCompositeTransfertFunctionChart> overlayChart;
+  vtkSmartPointer<ctkVTKCompositeTransferFunctionChart> overlayChart;
   vtkSmartPointer<ctkVTKScalarsToColorsPreviewChart> previewChart;
   vtkSmartPointer<ctkVTKHistogramChart> histogramChart;
 

@@ -1,9 +1,22 @@
-/*
- * ctkVTKScalarsToColorsPreviewChart.cxx
- *
- *  Created on: 25 juil. 2017
- *      Author: a
- */
+/*=========================================================================
+
+  Library:   CTK
+
+  Copyright (c) Kitware Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=========================================================================*/
 
 #include "ctkVTKScalarsToColorsPreviewChart.h"
 
@@ -36,30 +49,30 @@ ctkVTKScalarsToColorsPreviewChart::ctkVTKScalarsToColorsPreviewChart()
 	SetInteractive(false);
 }
 
-void ctkVTKScalarsToColorsPreviewChart::SetColorTransferFunction(vtkColorTransferFunction* function, double minDataRange, double maxDataRange)
+void ctkVTKScalarsToColorsPreviewChart::SetColorTransferFunction(vtkColorTransferFunction* function)
 {
-	ClearPlots();
+  ClearPlots();
 
-	vtkSmartPointer<vtkColorTransferFunctionItem> compositeVisibleItem = vtkSmartPointer<vtkColorTransferFunctionItem>::New();
-	compositeVisibleItem->SetMaskAboveCurve(false);
-	compositeVisibleItem->SetInteractive(false);
-	compositeVisibleItem->SetOpacity(1);
-	compositeVisibleItem->SelectableOff();
-	compositeVisibleItem->SetColorTransferFunction(function);
-	AddPlot(compositeVisibleItem);
-}
+  vtkSmartPointer<vtkColorTransferFunctionItem> compositeVisibleItem =
+    vtkSmartPointer<vtkColorTransferFunctionItem>::New();
+  compositeVisibleItem->SetMaskAboveCurve(false);
+  compositeVisibleItem->SetInteractive(false);
+  compositeVisibleItem->SetOpacity(1);
+  compositeVisibleItem->SelectableOff();
+  compositeVisibleItem->SetColorTransferFunction(function);
+  AddPlot(compositeVisibleItem);
 
-void ctkVTKScalarsToColorsPreviewChart::SetColorTransferFunction(vtkSmartPointer<vtkColorTransferFunction> function)
-{
   if (function == nullptr)
   {
     vtkSmartPointer<vtkColorTransferFunction> ctf =
       vtkSmartPointer<vtkColorTransferFunction>::New();
-    this->SetColorTransferFunction(ctf, 0, 255);
+    compositeVisibleItem->SetColorTransferFunction(ctf);
+    AddPlot(compositeVisibleItem);
     return;
   }
 
-  this->SetColorTransferFunction(function, function->GetRange()[0], function->GetRange()[1]);
+  compositeVisibleItem->SetColorTransferFunction(function);
+  AddPlot(compositeVisibleItem);
 }
 
 ctkVTKScalarsToColorsPreviewChart::~ctkVTKScalarsToColorsPreviewChart()

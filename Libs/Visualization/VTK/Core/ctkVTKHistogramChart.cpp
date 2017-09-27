@@ -1,38 +1,41 @@
+/*=========================================================================
+
+  Library:   CTK
+
+  Copyright (c) Kitware Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=========================================================================*/
+
 #include <ctkVTKHistogramChart.h>
 #include <vtkAxis.h>
-#include <vtkCallbackCommand.h>
-#include <vtkCommand.h>
-#include <vtkContext2D.h>
-#include <vtkContextMouseEvent.h>
-#include <vtkContextScene.h>
-#include <vtkDataArray.h>
-#include <vtkDoubleArray.h>
 #include <vtkObjectFactory.h>
 #include <vtkPen.h>
-#include <vtkPiecewiseFunction.h>
-#include <vtkPiecewiseFunctionItem.h>
-#include <vtkPlot.h>
 #include <vtkPlotBar.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
 #include <vtkScalarsToColors.h>
 #include <vtkTable.h>
 #include <vtkTextProperty.h>
 #include <vtkTooltipItem.h>
-#include <vtkTransform2D.h>
 
 vtkStandardNewMacro(ctkVTKHistogramChart)
 
-ctkVTKHistogramChart::ctkVTKHistogramChart() {
+ctkVTKHistogramChart::ctkVTKHistogramChart()
+{
 	this->SetBarWidthFraction(1.0);
 	this->ForceAxesToBoundsOn();
 
-  //this->SetAutoSize(true);
-  //this->SetAutoAxes(false);
-  //this->SetHiddenAxisBorder(0);
 	this->SetLayoutStrategy(vtkChart::AXES_TO_RECT);
-  //this->SetRenderEmpty(true);
-  //this->ZoomWithMouseWheelOff();
 	this->SetHiddenAxisBorder(10);
 
 	for (int i = 0; i < 4; ++i) {
@@ -40,7 +43,6 @@ ctkVTKHistogramChart::ctkVTKHistogramChart() {
 		this->GetAxis(i)->SetNumberOfTicks(0);
 		this->GetAxis(i)->SetLabelsVisible(false);
 		this->GetAxis(i)->SetMargins(1, 1);
-		//this->GetAxis(i)->SetBehavior(vtkAxis::AUTO);
 		this->GetAxis(i)->SetTitle("");
 	}
 
@@ -62,17 +64,20 @@ ctkVTKHistogramChart::ctkVTKHistogramChart() {
 	this->HistogramPlotBar->SetOpacity(0.15);
 }
 
-ctkVTKHistogramChart::~ctkVTKHistogramChart() {
+ctkVTKHistogramChart::~ctkVTKHistogramChart()
+{
 }
 
 void ctkVTKHistogramChart::SetHistogramInputData(vtkTable* table,
-		const char* xAxisColumn, const char* yAxisColumn) {
+    const char* xAxisColumn, const char* yAxisColumn)
+{
 	this->HistogramPlotBar->SetInputData(table, xAxisColumn, yAxisColumn);
   this->SelectColorArray(xAxisColumn);
 	RecalculateBounds();
 }
 
-void ctkVTKHistogramChart::SetScalarVisibility(bool visible) {
+void ctkVTKHistogramChart::SetScalarVisibility(bool visible)
+{
 	this->HistogramPlotBar->SetScalarVisibility(visible);
 }
 
@@ -81,6 +86,7 @@ void ctkVTKHistogramChart::SetLookupTable(vtkScalarsToColors* lut)
 	this->HistogramPlotBar->SetLookupTable(lut);
 }
 
-void ctkVTKHistogramChart::SelectColorArray(const char* arrayName) {
+void ctkVTKHistogramChart::SelectColorArray(const char* arrayName)
+{
 	this->HistogramPlotBar->SelectColorArray(arrayName);
 }

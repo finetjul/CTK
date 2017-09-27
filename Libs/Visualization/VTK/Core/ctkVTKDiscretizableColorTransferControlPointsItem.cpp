@@ -1,6 +1,25 @@
-#include <ctkVTKDiscretizableColorTransferControlPointsItem.h>
+/*=========================================================================
+
+  Library:   CTK
+
+  Copyright (c) Kitware Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+=========================================================================*/
+
+#include "ctkVTKDiscretizableColorTransferControlPointsItem.h"
 #include <vtkContextMouseEvent.h>
-#include <vtkContextScene.h>
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 
@@ -36,7 +55,8 @@ bool ctkVTKDiscretizableColorTransferControlPointsItem::MouseButtonPressEvent(
 	return this->Superclass::MouseButtonPressEvent(mouse);
 }
 
-bool ctkVTKDiscretizableColorTransferControlPointsItem::MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse)
+bool ctkVTKDiscretizableColorTransferControlPointsItem::
+  MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse)
 {
   // If no point is selected, abort event
   if (mouse.GetButton() == vtkContextMouseEvent::LEFT_BUTTON &&
@@ -50,7 +70,7 @@ bool ctkVTKDiscretizableColorTransferControlPointsItem::MouseButtonReleaseEvent(
 
 
 bool ctkVTKDiscretizableColorTransferControlPointsItem::MouseMoveEvent(
-		const vtkContextMouseEvent &mouse)
+  const vtkContextMouseEvent &mouse)
 {
   // If no point is selected, abort event
   if (mouse.GetButton() == vtkContextMouseEvent::LEFT_BUTTON &&
@@ -62,8 +82,9 @@ bool ctkVTKDiscretizableColorTransferControlPointsItem::MouseMoveEvent(
 	 return this->Superclass::MouseMoveEvent(mouse);
 }
 
-bool ctkVTKDiscretizableColorTransferControlPointsItem::PointNearPiecewiseFunction(
-		const double position[2]) {
+bool ctkVTKDiscretizableColorTransferControlPointsItem::
+  PointNearPiecewiseFunction(const double position[2])
+{
 	double x = position[0];
 	double y = 0.0;
 

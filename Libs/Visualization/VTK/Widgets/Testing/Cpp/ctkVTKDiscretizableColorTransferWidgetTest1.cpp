@@ -28,17 +28,12 @@
 
 // VTK includes
 #include <QVTKWidget.h>
-#include <vtkContextScene.h>
-#include <vtkContextView.h>
 #include <vtkDoubleArray.h>
 #include <vtkIntArray.h>
 #include <vtkDiscretizableColorTransferFunction.h>
 #include <vtkNew.h>
 #include <vtkPiecewiseFunction.h>
-#include <vtkRenderWindow.h>
 #include <vtkTable.h>
-
-// STD includes
 
 //-----------------------------------------------------------------------------
 int ctkVTKDiscretizableColorTransferWidgetTest1(int argc, char * argv [] )
