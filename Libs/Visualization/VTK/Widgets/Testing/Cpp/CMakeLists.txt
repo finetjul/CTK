@@ -26,6 +26,7 @@ set(TEST_SOURCES
   ctkTransferFunctionViewTest5.cpp
   ctkVTKPropertyWidgetTest.cpp
   ctkVTKRenderViewTest1.cpp
+  ctkVTKScalarsToColorsComboBoxTest1.cpp
   ctkVTKScalarsToColorsUtilsTest1.cpp
   ctkVTKSliceViewTest1.cpp
   ctkVTKSurfaceMaterialPropertyWidgetTest1.cpp

@@ -53,6 +53,8 @@ set(KIT_SRCS
   ctkVTKRenderView_p.h
   ctkVTKScalarBarWidget.cpp
   ctkVTKScalarBarWidget.h
+  ctkVTKScalarsToColorsComboBox.cpp
+  ctkVTKScalarsToColorsComboBox.h
   ctkVTKScalarsToColorsUtils.cpp
   ctkVTKScalarsToColorsUtils.h
   ctkVTKSliceView.cpp
@@ -89,6 +91,7 @@ set(KIT_MOC_SRCS
   ctkVTKRenderView.h
   ctkVTKRenderView_p.h
   ctkVTKScalarBarWidget.h
+  ctkVTKScalarsToColorsComboBox.h
   ctkVTKSliceView.h
   ctkVTKSliceView_p.h
   ctkVTKSurfaceMaterialPropertyWidget.h
