@@ -54,7 +54,8 @@ void ctkVTKScalarsToColorsComboBoxPrivate::init()
 {
   Q_Q(ctkVTKScalarsToColorsComboBox);
 
-  QObject::connect(q->model(), &QAbstractItemModel::rowsAboutToBeRemoved, q, &ctkVTKScalarsToColorsComboBox::onRowsAboutToBeRemoved);
+  QObject::connect(q->model(), SIGNAL(rowsAboutToBeRemoved(const QModelIndex&, int, int)),
+    q, SLOT(onRowsAboutToBeRemoved(const QModelIndex&, int, int)));
 
   q->setIconSize(QSize(100, 20));
 
@@ -95,7 +96,7 @@ int ctkVTKScalarsToColorsComboBox::addScalarsToColors(vtkScalarsToColors* scFunc
   }
   else
   {
-    img = QImage(this->iconSize(), QImage::Format::Format_Alpha8);
+    img = QImage(this->iconSize(), QImage::Format::Format_Indexed8);
     img.fill(Qt::transparent);
   }
 
