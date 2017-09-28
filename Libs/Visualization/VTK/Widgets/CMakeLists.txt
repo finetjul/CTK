@@ -55,8 +55,8 @@ set(KIT_SRCS
   ctkVTKScalarBarWidget.h
   ctkVTKScalarsToColorsComboBox.cpp
   ctkVTKScalarsToColorsComboBox.h
-  ctkVTKScalarsToColorsUtils.cpp
-  ctkVTKScalarsToColorsUtils.h
+  ctkVTKScalarsToColorsWidgetUtils.cpp
+  ctkVTKScalarsToColorsWidgetUtils.h
   ctkVTKSliceView.cpp
   ctkVTKSliceView.h
   ctkVTKSliceView_p.h

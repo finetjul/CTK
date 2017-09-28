@@ -23,7 +23,7 @@
 
 // CTK includes
 #include "ctkVTKScalarsToColorsComboBox.h"
-#include "ctkVTKScalarsToColorsUtils.h"
+#include "ctkVTKScalarsToColorsWidgetUtils.h"
 
 // VTK includes
 #include <vtkScalarsToColors.h>

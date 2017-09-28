@@ -24,6 +24,7 @@
 #include <ctkDoubleSlider.h>
 #include <ctkVTKScalarsToColorsComboBox.h>
 #include <ctkVTKScalarsToColorsEditor.h>
+#include <ctkVTKScalarsTocolorsUtils.h>
 
 // Qt includes
 #include <QColorDialog>
@@ -49,9 +50,6 @@
 #include <vtkRenderer.h>
 #include <vtkScalarsToColors.h>
 #include <vtkTable.h>
-
-// TODO
-#include <MuratUtil.h>
 
 template<typename ... Args> struct SELECT
 {
@@ -341,7 +339,7 @@ void ctkVTKDiscretizableColorTransferWidget::onPaletteIndexChanged(vtkScalarsToC
   emit(currentScalarsToColorsChanged(d->scalarsToColorsEditor->GetColorTransfertFunction()));
 
   //Update rendering
-  d->qvtk->GetRenderWindow()->Render();
+  d->qvtk->GetInteractor()->Render();
 }
 
 // ----------------------------------------------------------------------------
@@ -357,8 +355,8 @@ void ctkVTKDiscretizableColorTransferWidget::onHistogramDataModified(vtkTable* h
 // ----------------------------------------------------------------------------
 void ctkVTKDiscretizableColorTransferWidget::transparencyChanged(double value)
 {
-  //MuratUtil::setTransparency(LUT, value);
-  onScalarOpacityFunctionChanged();
+	//ctkVTKScalarsTocolorsUtils::setTransparency(LUT, ((double) value100) / 100.0);
+	onScalarOpacityFunctionChanged();
 }
 
 // ----------------------------------------------------------------------------
@@ -412,7 +410,7 @@ void ctkVTKDiscretizableColorTransferWidget::onCenterRangeClicked()
 void ctkVTKDiscretizableColorTransferWidget::onInvertClicked()
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
-  //MuratUtil::reverseColorMap(LUT);
+  //ctkVTKScalarsTocolorsUtils::reverseColorMap(LUT);
   d->qvtk->GetInteractor()->Render();
 }
 

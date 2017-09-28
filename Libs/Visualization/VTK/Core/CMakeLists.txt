@@ -27,8 +27,8 @@ set(KIT_SRCS
   ctkVTKObject.h
   ctkVTKObjectEventsObserver.cpp
   ctkVTKObjectEventsObserver.h
-  MuratUtil.cpp
-  MuratUtil.h
+  ctkVTKScalarsToColorsUtils.cpp
+  ctkVTKScalarsToColorsUtils.h
   vtkLightBoxRendererManager.cpp
   vtkLightBoxRendererManager.h
   )

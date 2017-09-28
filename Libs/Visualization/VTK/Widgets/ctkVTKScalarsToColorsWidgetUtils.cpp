@@ -26,13 +26,15 @@
 
 // CTK includes
 #include "ctkLogger.h"
-#include "ctkVTKScalarsToColorsUtils.h"
+#include "ctkVTKScalarsToColorsWidgetUtils.h"
 
 // VTK includes
+#include <vtkDiscretizableColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
 #include <vtkScalarsToColors.h>
 
 //----------------------------------------------------------------------------
-static ctkLogger logger("org.commontk.visualization.vtk.widgets.ctkVTKScalarsToColorsUtils");
+static ctkLogger logger("org.commontk.visualization.vtk.widgets.ctkVTKScalarsToColorsWidgetUtils");
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
