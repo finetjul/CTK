@@ -54,7 +54,6 @@ public slots:
   void onPaletteIndexChanged(vtkScalarsToColors* ctf);
   void onHistogramDataModified(vtkTable* histogramTable);
 
-
 private:
 	QIcon getColorIcon(QColor color);
 

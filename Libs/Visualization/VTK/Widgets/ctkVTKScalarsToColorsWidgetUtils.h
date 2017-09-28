@@ -18,18 +18,19 @@
 
 =========================================================================*/
 
-#ifndef __ctkVTKScalarsToColorsUtils_h
-#define __ctkVTKScalarsToColorsUtils_h
+#ifndef __ctkVTKScalarsToColorsWidgetUtils_h
+#define __ctkVTKScalarsToColorsWidgetUtils_h
 
 // CTK includes
 #include "ctkVisualizationVTKWidgetsExport.h"
 
 // VTK includes
+class vtkDiscretizableColorTransferFunction;
 class vtkScalarsToColors;
 
 namespace ctk {
 ///
-/// \ingroup Visualization_VTK_Widgets
+/// \ingroup Visualization_VTK_Core
 /// Convert a vtkScalarsToColors into a QImage
 /// If size is empty, it will use the large icon size of the application style
 QImage CTK_VISUALIZATION_VTK_WIDGETS_EXPORT scalarsToColorsImage(vtkScalarsToColors* scalarsToColors, const QSize& size = QSize());

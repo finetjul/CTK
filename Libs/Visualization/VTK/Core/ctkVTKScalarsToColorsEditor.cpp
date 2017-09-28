@@ -22,7 +22,6 @@
 #include "ctkVTKScalarsToColorsPreviewChart.h"
 #include "ctkVTKHistogramChart.h"
 #include "ctkVTKScalarsToColorsEditor.h"
-#include <MuratUtil.h>
 #include <vtkAxis.h>
 #include <vtkBrush.h>
 #include <vtkContextScene.h>
@@ -33,6 +32,8 @@
 #include <vtkTable.h>
 #include <vtkVector.h>
 
+double ctkVTKScalarsToColorsEditor::BACKGROUND_COLOR[3]
+  = {49.0 / 256, 54.0 / 256, 59.0 / 256};
 
 class ctkVTKScalarsToColorsEditor::EventForwarder
 {

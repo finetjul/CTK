@@ -21,6 +21,7 @@
 #include "ctkVTKCompositeTransferFunctionChart.h"
 #include "ctkVTKDiscretizableColorTransferControlPointsItem.h"
 #include "ctkVTKHistogramMarker.h"
+#include "ctkVTKScalarsToColorsUtils.h"
 #include <vtkAxis.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkContextMouseEvent.h>
@@ -31,7 +32,6 @@
 #include <vtkPen.h>
 #include <vtkTable.h>
 #include <vtkTransform2D.h>
-#include <MuratUtil.h>
 
 vtkStandardNewMacro(ctkVTKCompositeTransferFunctionChart)
 
@@ -197,7 +197,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     minMarker->SetPosition(currentRange[0]);
     if (workingFunction)
     {
-      MuratUtil::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
+      ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
     }
     minPlot->Modified();
   }
@@ -216,7 +216,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     maxMarker->SetPosition(currentRange[1]);
     if (workingFunction)
     {
-      MuratUtil::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
+      ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
     }
     maxPlot->Modified();
   }
@@ -346,7 +346,7 @@ void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double ma
 
   if (workingFunction)
   {
-    MuratUtil::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
+    ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
   }
   minPlot->Modified();
   maxPlot->Modified();

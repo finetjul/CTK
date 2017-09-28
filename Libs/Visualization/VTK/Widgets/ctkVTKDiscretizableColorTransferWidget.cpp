@@ -17,6 +17,7 @@
 
 #include <ctkVTKScalarsToColorsComboBox.h>
 #include <ctkVTKScalarsToColorsEditor.h>
+#include <ctkVTKScalarsTocolorsUtils.h>
 #include <QColorDialog>
 #include <QCheckBox>
 #include <QDoubleValidator>
@@ -41,7 +42,6 @@
 #include <vtkRenderer.h>
 #include <vtkScalarsToColors.h>
 #include <vtkTable.h>
-#include <MuratUtil.h>
 
 template<typename ... Args> struct SELECT
 {
@@ -74,7 +74,7 @@ ctkVTKDiscretizableColorTransferWidget::ctkVTKDiscretizableColorTransferWidget(Q
   qvtk->SetRenderWindow(histogramView->GetRenderWindow());
 
   histogramView->GetRenderWindow()->Render();
-  histogramView->GetRenderer()->SetBackground(MuratUtil::BACKGROUND_COLOR);
+  histogramView->GetRenderer()->SetBackground(ctkVTKScalarsToColorsEditor::BACKGROUND_COLOR);
 
   eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointEditEvent, this, SLOT(onCurrentPointEdit()));
   eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointChangedEvent, this, SLOT(onCurrentPointChanged()));
@@ -253,7 +253,7 @@ void ctkVTKDiscretizableColorTransferWidget::onHistogramDataModified(vtkTable* h
 
 void ctkVTKDiscretizableColorTransferWidget::transparencyChanged(int value100)
 {
-	//MuratUtil::setTransparency(LUT, ((double) value100) / 100.0);
+	//ctkVTKScalarsTocolorsUtils::setTransparency(LUT, ((double) value100) / 100.0);
 	onScalarOpacityFunctionChanged();
 }
 
@@ -302,7 +302,7 @@ void ctkVTKDiscretizableColorTransferWidget::onCenterRangeClicked()
 
 void ctkVTKDiscretizableColorTransferWidget::onInvertClicked()
 {
-	//MuratUtil::reverseColorMap(LUT);
+	//ctkVTKScalarsTocolorsUtils::reverseColorMap(LUT);
   qvtk->GetRenderWindow()->Render();
 }
 

@@ -42,6 +42,8 @@ class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKScalarsToColorsEditor
   : public vtkAbstractContextItem
 {
 public:
+  static double BACKGROUND_COLOR[3];
+
   vtkTypeMacro(ctkVTKScalarsToColorsEditor, vtkAbstractContextItem)
   static ctkVTKScalarsToColorsEditor* New();
 
