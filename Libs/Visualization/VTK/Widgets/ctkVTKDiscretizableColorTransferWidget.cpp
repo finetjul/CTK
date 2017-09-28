@@ -150,7 +150,7 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   this->qvtk->SetRenderWindow(this->histogramView->GetRenderWindow());
 
   this->histogramView->GetRenderWindow()->Render();
-  this->histogramView->GetRenderer()->SetBackground(MuratUtil::BACKGROUND_COLOR);
+  this->histogramView->GetRenderer()->SetBackground(ctkVTKScalarsToColorsEditor::BACKGROUND_COLOR);
 
   eventLink->Connect(scalarsToColorsEditor.Get(),
     vtkControlPointsItem::CurrentPointEditEvent,
