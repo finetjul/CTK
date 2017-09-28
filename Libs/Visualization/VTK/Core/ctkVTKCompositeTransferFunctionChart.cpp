@@ -84,7 +84,8 @@ void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretiz
 }
 
 void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function,
-  double dataRangeMin, double dataRangeMax) {
+  double dataRangeMin, double dataRangeMax)
+{
   workingFunction = function;
   ClearPlots();
 
@@ -171,6 +172,8 @@ void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretiz
 
   GetAxis(vtkAxis::BOTTOM)->SetRange(dataRange[0], dataRange[1]);
 
+  //Disable zooming
+  this->SetActionToButton(ZOOM, -1);
 }
 
 ctkVTKCompositeTransferFunctionChart::~ctkVTKCompositeTransferFunctionChart()
@@ -228,11 +231,6 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
 
 bool ctkVTKCompositeTransferFunctionChart::MouseMoveEvent(const vtkContextMouseEvent &mouse)
 {
-  if (mouse.GetModifiers() == vtkContextMouseEvent::CONTROL_MODIFIER)
-  {
-    return false;
-  }
-
   if (mouse.GetButton() == vtkContextMouseEvent::LEFT_BUTTON && rangeMoving != RangeMoving::NONE)
   {
     updateMarkerPosition(mouse);
@@ -248,11 +246,6 @@ bool ctkVTKCompositeTransferFunctionChart_inRange(double min, double max, double
 
 bool ctkVTKCompositeTransferFunctionChart::MouseButtonPressEvent(const vtkContextMouseEvent& mouse)
 {
-  if (mouse.GetModifiers() == vtkContextMouseEvent::CONTROL_MODIFIER)
-  {
-    return false;
-  }
-
   if (mouse.GetButton() == vtkContextMouseEvent::LEFT_BUTTON)
   {
     if (rangeMoving == RangeMoving::NONE)
@@ -283,13 +276,14 @@ bool ctkVTKCompositeTransferFunctionChart::MouseButtonPressEvent(const vtkContex
   return this->Superclass::MouseButtonPressEvent(mouse);
 }
 
-bool ctkVTKCompositeTransferFunctionChart::MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) {
-
+bool ctkVTKCompositeTransferFunctionChart::MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse)
+{
   rangeMoving = RangeMoving::NONE;
   return this->Superclass::MouseButtonReleaseEvent(mouse);
 }
 
-bool ctkVTKCompositeTransferFunctionChart::GetCurrentControlPointColor(double rgb[3]) {
+bool ctkVTKCompositeTransferFunctionChart::GetCurrentControlPointColor(double rgb[3])
+{
   vtkColorTransferFunction* ctf = this->controlPoints->GetColorTransferFunction();
   if (!ctf)
   {
@@ -311,7 +305,8 @@ bool ctkVTKCompositeTransferFunctionChart::GetCurrentControlPointColor(double rg
   return true;
 }
 
-void ctkVTKCompositeTransferFunctionChart::SetCurrentControlPointColor(const double rgb[3]) {
+void ctkVTKCompositeTransferFunctionChart::SetCurrentControlPointColor(const double rgb[3])
+{
   vtkColorTransferFunction* ctf = this->controlPoints->GetColorTransferFunction();
   if (!ctf)
   {
@@ -332,7 +327,8 @@ void ctkVTKCompositeTransferFunctionChart::SetCurrentControlPointColor(const dou
   ctf->SetNodeValue(currentIdx, xrgbms);
 }
 
-void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double max) {
+void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double max)
+{
   //check if min < max;
   min = vtkMath::ClampValue(min, dataRange[0], dataRange[1]);
   max = vtkMath::ClampValue(max, dataRange[0], dataRange[1]);
@@ -356,7 +352,8 @@ void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double ma
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }
 
-void ctkVTKCompositeTransferFunctionChart::CenterRange(double center) {
+void ctkVTKCompositeTransferFunctionChart::CenterRange(double center)
+{
   double width = currentRange[1] - currentRange[0];
   double minCenter = dataRange[0] + width / 2.0;
   double maxCenter = dataRange[1] - width / 2.0;
