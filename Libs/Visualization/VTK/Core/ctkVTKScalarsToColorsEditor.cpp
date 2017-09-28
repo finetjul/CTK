@@ -20,6 +20,7 @@
 
 #include "ctkVTKCompositeTransferFunctionChart.h"
 #include "ctkVTKScalarsToColorsPreviewChart.h"
+#include "ctkVTKScalarsToColorsUtils.h"
 #include "ctkVTKHistogramChart.h"
 #include "ctkVTKScalarsToColorsEditor.h"
 #include <vtkAxis.h>
@@ -96,7 +97,7 @@ ctkVTKScalarsToColorsEditor::ctkVTKScalarsToColorsEditor()
   controlPoints->AddObserver(vtkControlPointsItem::CurrentPointChangedEvent,
     this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
   controlPoints->AddObserver(vtkControlPointsItem::CurrentPointEditEvent,
-      this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
+    this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
 }
 
 ctkVTKScalarsToColorsEditor::~ctkVTKScalarsToColorsEditor()
@@ -156,10 +157,16 @@ void ctkVTKScalarsToColorsEditor::SetDiscretizableColorTransfertFunction(
   controlPoints->AddObserver(vtkControlPointsItem::CurrentPointChangedEvent,
     this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
   controlPoints->AddObserver(vtkControlPointsItem::CurrentPointEditEvent,
-      this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
+    this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
 }
 
 vtkSmartPointer<vtkScalarsToColors> ctkVTKScalarsToColorsEditor::GetColorTransfertFunction()
+{
+  return colorTransferFunction;
+}
+
+vtkSmartPointer<vtkDiscretizableColorTransferFunction>
+  ctkVTKScalarsToColorsEditor::GetDiscretizableColorTransfertFunction()
 {
   return colorTransferFunction;
 }
@@ -190,6 +197,17 @@ void ctkVTKScalarsToColorsEditor::SetCurrentControlPointColor(
 {
 	overlayChart->SetCurrentControlPointColor(rgb);
 }
+
+void ctkVTKScalarsToColorsEditor::SetGlobalOpacity(int opacity)
+{
+  ctk::setTransparency(colorTransferFunction, ((double)opacity) / 100.0);
+}
+
+void ctkVTKScalarsToColorsEditor::InvertColorTransferFunction()
+{
+  ctk::reverseColorMap(colorTransferFunction);
+}
+
 
 bool ctkVTKScalarsToColorsEditor::Paint(vtkContext2D* painter)
 {

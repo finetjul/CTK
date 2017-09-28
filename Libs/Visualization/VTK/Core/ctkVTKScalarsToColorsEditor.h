@@ -51,6 +51,8 @@ public:
   vtkSmartPointer<vtkScalarsToColors> GetColorTransfertFunction();
 
   void SetDiscretizableColorTransfertFunction(vtkDiscretizableColorTransferFunction* dctf);
+  vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetDiscretizableColorTransfertFunction();
+
   void SetHistogramTable(vtkTable* table, const char* xAxisColumn, const char* yAxisColumn);
 
 	// Paint event for the editor.
@@ -64,6 +66,9 @@ public:
 
 	void SetCurrentRange(double min, double max);
 	void CenterRange(double center);
+
+  void SetGlobalOpacity(int opacity);
+  void InvertColorTransferFunction();
 
 protected:
   vtkSmartPointer<ctkVTKCompositeTransferFunctionChart> overlayChart;

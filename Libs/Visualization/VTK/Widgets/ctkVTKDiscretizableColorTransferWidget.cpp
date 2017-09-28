@@ -46,6 +46,7 @@
 #include <vtkContextScene.h>
 #include <vtkContextView.h>
 #include <vtkControlPointsItem.h>
+#include <vtkDiscretizableColorTransferFunction.h>
 #include <vtkEventQtSlotConnect.h>
 #include <vtkRenderer.h>
 #include <vtkScalarsToColors.h>
@@ -209,26 +210,26 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   layout->addItem(new QSpacerItem(0, 0), 6, 5);
 
   //option panel part
-  //QWidget* optionPanel = new QWidget(q, Qt::Popup);
-  //auto panelLayout = new QGridLayout(optionPanel);
+  QWidget* optionPanel = new QWidget(q, Qt::Popup);
+  auto panelLayout = new QGridLayout(optionPanel);
 
   QToolButton* optionButton = new QToolButton(q);
   optionButton->setIcon(q->style()->standardIcon(QStyle::SP_FileDialogDetailedView, nullptr, optionButton));
   optionButton->setToolTip("Other options");
   layout->addWidget(optionButton, 7, 5, 1, 1);
 
-  //QLabel* nanLabel = new QLabel("NaN values :");
-  //nanButton = new QToolButton;
-  //panelLayout->addWidget(nanLabel, 0, 0);
-  //panelLayout->addWidget(nanButton, 0, 1);
+  QLabel* nanLabel = new QLabel("NaN values :");
+  nanButton = new QToolButton;
+  panelLayout->addWidget(nanLabel, 0, 0);
+  panelLayout->addWidget(nanButton, 0, 1);
 
-  //discretizeCheck = new QCheckBox;
-  //discretizeCheck->setText("Discretize");
-  //classesDiscret = new QSpinBox;
-  //classesDiscret->setMinimum(1);
-  //classesDiscret->setMaximum(255);
-  //panelLayout->addWidget(discretizeCheck, 1, 0);
-  //panelLayout->addWidget(classesDiscret, 1, 1);
+  discretizeCheck = new QCheckBox;
+  discretizeCheck->setText("Discretize");
+  classesDiscret = new QSpinBox;
+  classesDiscret->setMinimum(1);
+  classesDiscret->setMaximum(255);
+  panelLayout->addWidget(discretizeCheck, 1, 0);
+  panelLayout->addWidget(classesDiscret, 1, 1);
 
 
   QLabel* minLabel = new QLabel(q->tr("Min"));
@@ -252,28 +253,41 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   layout->setColumnStretch(2, 1);
   layout->setColumnStretch(4, 1);
 
-  //  connect(optionButton, &QPushButton::clicked, [this,optionButton,optionPanel]() {
-  //    QPoint buttonPos = mapToGlobal(optionButton->pos());
-  //    optionPanel->move(buttonPos.x(),buttonPos.y()+optionButton->height());
-  //    optionPanel->setVisible(!optionPanel->isVisible());
-  //  });
+  q->connect(optionButton, &QPushButton::clicked, [this, optionButton, optionPanel, q]()
+  {
+    QPoint buttonPos = q->mapToGlobal(optionButton->pos());
+    optionPanel->move(buttonPos.x(), buttonPos.y() + optionButton->height());
+    optionPanel->setVisible(!optionPanel->isVisible());
+  });
 
-  //  connect(nanButton, &QToolButton::clicked, [this,optionPanel]() {
-  //    double r, g, b;
-  //    LUT->GetNanColor(r,g,b);
-  //    QColor selected = QColorDialog::getColor(QColor(255*r,255*g,255*b,255),optionPanel, "Select NaN values color",QColorDialog::DontUseNativeDialog);
-  //    nanButton->setIcon(getColorIcon(selected));
-  //    LUT->SetNanColor(selected.redF(),selected.greenF(),selected.blueF());
-  //  });
+  q->connect(nanButton, &QToolButton::clicked, [this, optionPanel]() {
+    if (scalarsToColorsEditor->GetDiscretizableColorTransfertFunction() == nullptr)
+    {
+      nanButton->setIcon(getColorIcon(QColor(0, 0, 0, 0)));
+      return;
+    }
+    double r, g, b;
+    scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->GetNanColor(r, g, b);
+    QColor selected = QColorDialog::getColor(QColor(255 * r, 255 * g, 255 * b, 255), optionPanel, "Select NaN values color", QColorDialog::DontUseNativeDialog);
+    nanButton->setIcon(getColorIcon(selected));
+    scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetNanColor(
+      selected.redF(), selected.greenF(), selected.blueF());
+  });
 
-  //  connect(discretizeCheck, &QCheckBox::stateChanged, [this](int state) {
-  //    LUT->SetDiscretize(state==Qt::Checked);
-  //    histogramView->GetRenderWindow()->Render();
-  //  });
-  //  connect(classesDiscret, SELECT<int>::OVERLOAD_OF(&QSpinBox::valueChanged), [this](int value) {
-  //    LUT->SetNumberOfValues(value);
-  //    histogramView->GetRenderWindow()->Render();
-  //  });
+   q->connect(discretizeCheck, &QCheckBox::stateChanged, [this](int state) {
+     this->classesDiscret->setEnabled(state == Qt::Checked);
+     int nbDiscreteValues = scalarsToColorsEditor->GetDiscretizableColorTransfertFunction() != nullptr ?
+       scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->GetNumberOfValues() : 0;
+     classesDiscret->setValue(nbDiscreteValues);
+
+     this->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetDiscretize(state == Qt::Checked);
+     histogramView->GetRenderWindow()->Render();
+    });
+
+   q->connect(classesDiscret, SELECT<int>::OVERLOAD_OF(&QSpinBox::valueChanged), [this](int value){
+     scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetNumberOfValues(value);
+     histogramView->GetRenderWindow()->Render();
+   });
 
   q->setLayout(layout);
 }
@@ -355,7 +369,8 @@ void ctkVTKDiscretizableColorTransferWidget::onHistogramDataModified(vtkTable* h
 // ----------------------------------------------------------------------------
 void ctkVTKDiscretizableColorTransferWidget::transparencyChanged(double value)
 {
-	//ctkVTKScalarsTocolorsUtils::setTransparency(LUT, ((double) value100) / 100.0);
+  Q_D(ctkVTKDiscretizableColorTransferWidget);
+	d->scalarsToColorsEditor->SetGlobalOpacity(value);
 	onScalarOpacityFunctionChanged();
 }
 
@@ -373,7 +388,8 @@ void ctkVTKDiscretizableColorTransferWidget::onCurrentPointEdit()
   {
     QColor color = QColorDialog::getColor(QColor::fromRgbF(rgb[0], rgb[1], rgb[2]), this, "Select Color for Control Point",
         QColorDialog::DontUseNativeDialog);
-    if (color.isValid()) {
+    if (color.isValid())
+    {
       rgb[0] = color.redF();
       rgb[1] = color.greenF();
       rgb[2] = color.blueF();
@@ -410,7 +426,7 @@ void ctkVTKDiscretizableColorTransferWidget::onCenterRangeClicked()
 void ctkVTKDiscretizableColorTransferWidget::onInvertClicked()
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
-  //ctkVTKScalarsTocolorsUtils::reverseColorMap(LUT);
+  d->scalarsToColorsEditor->InvertColorTransferFunction();
   d->qvtk->GetInteractor()->Render();
 }
 
