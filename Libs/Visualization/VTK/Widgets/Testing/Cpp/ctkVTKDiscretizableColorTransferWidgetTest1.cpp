@@ -17,10 +17,8 @@
   limitations under the License.
 
 =========================================================================*/
-
 // Qt includes
 #include <QApplication>
-#include <QDebug>
 #include <QTimer>
 
 // CTK includes
@@ -28,40 +26,16 @@
 
 // VTK includes
 #include <QVTKWidget.h>
-#include <vtkDoubleArray.h>
-#include <vtkIntArray.h>
 #include <vtkDiscretizableColorTransferFunction.h>
 #include <vtkNew.h>
 #include <vtkPiecewiseFunction.h>
-#include <vtkTable.h>
 
 //-----------------------------------------------------------------------------
-int ctkVTKDiscretizableColorTransferWidgetTest1(int argc, char * argv [] )
+int ctkVTKDiscretizableColorTransferWidgetTest1(int argc, char * argv[])
 {
   QApplication app(argc, argv);
 
-  vtkSmartPointer<vtkDoubleArray> bins = vtkSmartPointer<vtkDoubleArray>::New();
-  bins->SetNumberOfComponents(1);
-  bins->SetNumberOfTuples(255);
-  bins->SetName("image_extents");
-  vtkSmartPointer<vtkIntArray> frequencies = vtkSmartPointer<vtkIntArray>::New();
-  frequencies->SetNumberOfComponents(1);
-  frequencies->SetNumberOfTuples(255);
-  frequencies->SetName("Frequency");
-
-  double spacing = 1;
-  double bin = 0;
-
-  for (unsigned int j = 0; j < 255; ++j)
-  {
-    bins->SetTuple1(j, bin);
-    bin += spacing;
-    frequencies->SetTuple1(j, j);
-  }
-
-  vtkNew<vtkTable> table;
-  table->AddColumn(bins);
-  table->AddColumn(frequencies);
+  QVTKWidget qvtk;
 
   //Dummy presets
   vtkNew<vtkDiscretizableColorTransferFunction> discretizableCTF;
@@ -75,7 +49,6 @@ int ctkVTKDiscretizableColorTransferWidgetTest1(int argc, char * argv [] )
 
   ctkVTKDiscretizableColorTransferWidget mWidget;
   mWidget.setColorTransferFunction(discretizableCTF.Get());
-  mWidget.setHistogramTable(table.Get());
   mWidget.show();
 
   if (argc < 2 || QString(argv[1]) != "-I")

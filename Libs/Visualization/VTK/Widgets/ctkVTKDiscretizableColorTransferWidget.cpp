@@ -24,7 +24,7 @@
 #include <ctkDoubleSlider.h>
 #include <ctkVTKScalarsToColorsComboBox.h>
 #include <ctkVTKScalarsToColorsEditor.h>
-#include <ctkVTKScalarsTocolorsUtils.h>
+#include <ctkVTKScalarsToColorsUtils.h>
 
 // Qt includes
 #include <QColorDialog>
@@ -47,7 +47,11 @@
 #include <vtkContextView.h>
 #include <vtkControlPointsItem.h>
 #include <vtkDiscretizableColorTransferFunction.h>
+#include <vtkDoubleArray.h>
 #include <vtkEventQtSlotConnect.h>
+#include <vtkIntArray.h>
+#include <vtkImageAccumulate.h>
+#include <vtkImageData.h>
 #include <vtkRenderer.h>
 #include <vtkScalarsToColors.h>
 #include <vtkTable.h>
@@ -67,7 +71,7 @@ protected:
   void focusInEvent(QFocusEvent* e)
   {
     QLineEdit::focusInEvent(e);
-//    QTimer::singleShot(0, [this]() {selectAll();});
+    QTimer::singleShot(0, [this]() {selectAll();});
   }
 };
 
@@ -165,6 +169,7 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
 
   this->scalarsToColorsSelector = new ctkVTKScalarsToColorsComboBox(q);
   this->scalarsToColorsSelector->addScalarsToColors(nullptr, q->tr("Reset"));
+
   QObject::connect(scalarsToColorsSelector, SIGNAL(currentScalarsToColorsChanged(vtkScalarsToColors*)),
     q, SLOT(onPaletteIndexChanged(vtkScalarsToColors*)));
   layout->addWidget(this->scalarsToColorsSelector, 0, 0, 1, 6);
@@ -228,6 +233,7 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   classesDiscret = new QSpinBox;
   classesDiscret->setMinimum(1);
   classesDiscret->setMaximum(255);
+  classesDiscret->setEnabled(discretizeCheck->isChecked());
   panelLayout->addWidget(discretizeCheck, 1, 0);
   panelLayout->addWidget(classesDiscret, 1, 1);
 
@@ -260,7 +266,8 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
     optionPanel->setVisible(!optionPanel->isVisible());
   });
 
-  q->connect(nanButton, &QToolButton::clicked, [this, optionPanel]() {
+  q->connect(nanButton, &QToolButton::clicked, [this, optionPanel]()
+  {
     if (scalarsToColorsEditor->GetDiscretizableColorTransfertFunction() == nullptr)
     {
       nanButton->setIcon(getColorIcon(QColor(0, 0, 0, 0)));
@@ -274,7 +281,8 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
       selected.redF(), selected.greenF(), selected.blueF());
   });
 
-   q->connect(discretizeCheck, &QCheckBox::stateChanged, [this](int state) {
+   q->connect(discretizeCheck, &QCheckBox::stateChanged, [this](int state)
+   {
      this->classesDiscret->setEnabled(state == Qt::Checked);
      int nbDiscreteValues = scalarsToColorsEditor->GetDiscretizableColorTransfertFunction() != nullptr ?
        scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->GetNumberOfValues() : 0;
@@ -282,11 +290,14 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
 
      this->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetDiscretize(state == Qt::Checked);
      histogramView->GetRenderWindow()->Render();
+     this->qvtk->GetInteractor()->Render();
     });
 
-   q->connect(classesDiscret, SELECT<int>::OVERLOAD_OF(&QSpinBox::valueChanged), [this](int value){
+   q->connect(classesDiscret, SELECT<int>::OVERLOAD_OF(&QSpinBox::valueChanged), [this](int value)
+   {
      scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetNumberOfValues(value);
      histogramView->GetRenderWindow()->Render();
+     this->qvtk->GetInteractor()->Render();
    });
 
   q->setLayout(layout);
@@ -323,11 +334,41 @@ void ctkVTKDiscretizableColorTransferWidget::setColorTransferFunction(vtkScalars
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::setHistogramTable(vtkTable* hTable)
+void ctkVTKDiscretizableColorTransferWidget::setHistogram(vtkImageAccumulate* histogram)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
-  d->histogramTable = hTable;
-  d->scalarsToColorsEditor->SetHistogramTable(hTable,
+  histogram->Update();
+
+  d->dataRange[0] = histogram->GetMin()[0];
+  d->dataRange[1] = histogram->GetMax()[0];
+  d->dataMean = histogram->GetMean()[0];
+
+  int* output = static_cast<int*>(histogram->GetOutput()->GetScalarPointer());
+  double spacing = histogram->GetComponentSpacing()[0];
+  double bin = histogram->GetComponentOrigin()[0];
+
+  vtkSmartPointer<vtkDoubleArray> bins = vtkSmartPointer<vtkDoubleArray>::New();
+  bins->SetNumberOfComponents(1);
+  bins->SetNumberOfTuples(255);
+  bins->SetName("image_extents");
+  vtkSmartPointer<vtkIntArray> frequencies = vtkSmartPointer<vtkIntArray>::New();
+  frequencies->SetNumberOfComponents(1);
+  frequencies->SetNumberOfTuples(255);
+  frequencies->SetName("Frequency");
+
+  for (unsigned int j = 0; j < 255; ++j)
+  {
+    bins->SetTuple1(j, bin);
+    bin += spacing;
+    frequencies->SetTuple1(j, *output++);
+  }
+
+  vtkNew<vtkTable> table;
+  table->AddColumn(bins);
+  table->AddColumn(frequencies);
+
+  d->histogramTable = table;
+  d->scalarsToColorsEditor->SetHistogramTable(table,
     "image_extents", "Frequency");
 
   d->qvtk->GetInteractor()->Render();
@@ -344,6 +385,8 @@ void ctkVTKDiscretizableColorTransferWidget::onScalarOpacityFunctionChanged()
 // ----------------------------------------------------------------------------
 void ctkVTKDiscretizableColorTransferWidget::onPaletteIndexChanged(vtkScalarsToColors* ctf)
 {
+  std::cout << "send null" << std::endl;
+
   Q_D(ctkVTKDiscretizableColorTransferWidget);
   //Setting the transfer function to the scalarsToColorsEditor results
   // in converting ctf to a vtkDiscretizableTransferFunction
@@ -353,16 +396,6 @@ void ctkVTKDiscretizableColorTransferWidget::onPaletteIndexChanged(vtkScalarsToC
   emit(currentScalarsToColorsChanged(d->scalarsToColorsEditor->GetColorTransfertFunction()));
 
   //Update rendering
-  d->qvtk->GetInteractor()->Render();
-}
-
-// ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onHistogramDataModified(vtkTable* hTable)
-{
-  Q_D(ctkVTKDiscretizableColorTransferWidget);
-  d->scalarsToColorsEditor->SetHistogramTable(hTable,
-    "image_extents", "Frequency");
-
   d->qvtk->GetInteractor()->Render();
 }
 

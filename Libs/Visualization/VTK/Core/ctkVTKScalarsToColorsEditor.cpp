@@ -198,9 +198,9 @@ void ctkVTKScalarsToColorsEditor::SetCurrentControlPointColor(
 	overlayChart->SetCurrentControlPointColor(rgb);
 }
 
-void ctkVTKScalarsToColorsEditor::SetGlobalOpacity(int opacity)
+void ctkVTKScalarsToColorsEditor::SetGlobalOpacity(double opacity)
 {
-  ctk::setTransparency(colorTransferFunction, ((double)opacity) / 100.0);
+  ctk::setTransparency(colorTransferFunction, (opacity));
 }
 
 void ctkVTKScalarsToColorsEditor::InvertColorTransferFunction()

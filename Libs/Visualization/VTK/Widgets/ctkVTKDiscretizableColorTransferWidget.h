@@ -29,9 +29,9 @@ class ctkVTKScalarsToColorsComboBox;
 // VTK includes
 #include <vtkSmartPointer.h>
 class QVTKWidget;
+class vtkImageAccumulate;
 class vtkPiecewiseFunction;
 class vtkScalarsToColors;
-class vtkTable;
 
 // Qt includes
 #include <QWidget>
@@ -48,7 +48,7 @@ public:
   virtual ~ctkVTKDiscretizableColorTransferWidget();
 
   void setColorTransferFunction(vtkScalarsToColors* ctf);
-  void setHistogramTable(vtkTable* histogram);
+  void setHistogram(vtkImageAccumulate* hist);
 
 signals:
   void dynamicChanged(double min, double max);
@@ -71,7 +71,6 @@ public slots:
   void onRangeEditorReturn();
 
   void onPaletteIndexChanged(vtkScalarsToColors* ctf);
-  void onHistogramDataModified(vtkTable* histogramTable);
 
 protected:
   QScopedPointer<ctkVTKDiscretizableColorTransferWidgetPrivate> d_ptr;

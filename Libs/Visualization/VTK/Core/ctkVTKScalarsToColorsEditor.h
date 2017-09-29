@@ -67,7 +67,7 @@ public:
 	void SetCurrentRange(double min, double max);
 	void CenterRange(double center);
 
-  void SetGlobalOpacity(int opacity);
+  void SetGlobalOpacity(double opacity);
   void InvertColorTransferFunction();
 
 protected:
