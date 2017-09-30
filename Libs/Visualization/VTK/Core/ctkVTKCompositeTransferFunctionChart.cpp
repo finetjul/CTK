@@ -48,11 +48,9 @@ ctkVTKCompositeTransferFunctionChart::ctkVTKCompositeTransferFunctionChart()
   ForceAxesToBoundsOn();
   SetAutoSize(true);
   SetAutoAxes(false);
-  SetHiddenAxisBorder(0);
-  SetLayoutStrategy(vtkChart::AXES_TO_RECT);
+  SetLayoutStrategy(vtkChart::FILL_SCENE);
   SetRenderEmpty(true);
   ZoomWithMouseWheelOff();
-  SetHiddenAxisBorder(10);
 
   for (int i = 0; i < 4; ++i)
   {
@@ -63,8 +61,6 @@ ctkVTKCompositeTransferFunctionChart::ctkVTKCompositeTransferFunctionChart()
     GetAxis(i)->SetMargins(1, 1);
     GetAxis(i)->SetTitle("");
   }
-
-  GetAxis(vtkAxis::BOTTOM)->SetBehavior(vtkAxis::FIXED);
 
   compositeHiddenItem = nullptr;
   controlPoints = nullptr;
@@ -136,7 +132,7 @@ void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretiz
 
   maxLinePlot->SetColor(255, 255, 255, 255);
   maxLinePlot->SetWidth(1.0);
-  //
+
   minDataPlot = AddPlot(vtkChart::LINE);
   maxDataPlot = AddPlot(vtkChart::LINE);
   minDataPlot->SetInputData(minDataMarker->getTable(), 0, 1);
@@ -162,16 +158,6 @@ void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretiz
   minDataPlot->Modified();
   maxDataPlot->Modified();
 
-  GetAxis(vtkAxis::BOTTOM)->SetUnscaledMaximum(1);
-
-  GetAxis(vtkAxis::BOTTOM)->SetMinimumLimit(dataRange[0]);
-  GetAxis(vtkAxis::BOTTOM)->SetMinimum(currentRange[0]);
-
-  GetAxis(vtkAxis::BOTTOM)->SetMaximumLimit(dataRange[1]);
-  GetAxis(vtkAxis::BOTTOM)->SetMaximum(currentRange[1]);
-
-  GetAxis(vtkAxis::BOTTOM)->SetRange(dataRange[0], dataRange[1]);
-
   //Disable zooming
   this->SetActionToButton(ZOOM, -1);
 }
@@ -196,7 +182,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     {
       currentRange[0] = newValue;
     }
-    //		currentRange[0] = vtkMath::ClampValue((double) pos.GetX(), dataRange[0], currentRange[1]);
+    //    currentRange[0] = vtkMath::ClampValue((double) pos.GetX(), dataRange[0], currentRange[1]);
     minMarker->SetPosition(currentRange[0]);
     if (workingFunction)
     {
@@ -215,7 +201,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     {
       currentRange[1] = newValue;
     }
-    //		currentRange[1] = vtkMath::ClampValue((double) pos.GetX(), currentRange[0], dataRange[1]);
+    //    currentRange[1] = vtkMath::ClampValue((double) pos.GetX(), currentRange[0], dataRange[1]);
     maxMarker->SetPosition(currentRange[1]);
     if (workingFunction)
     {
@@ -351,6 +337,12 @@ void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double ma
 
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }
+
+double* ctkVTKCompositeTransferFunctionChart::GetCurrentRange()
+{
+  return currentRange;
+}
+
 
 void ctkVTKCompositeTransferFunctionChart::CenterRange(double center)
 {

@@ -26,6 +26,7 @@
 #include <vtkAxis.h>
 #include <vtkBrush.h>
 #include <vtkContextScene.h>
+#include <vtkCommand.h>
 #include <vtkCompositeControlPointsItem.h>
 #include <vtkDiscretizableColorTransferFunction.h>
 #include <vtkObjectFactory.h>
@@ -62,10 +63,10 @@ ctkVTKScalarsToColorsEditor::ctkVTKScalarsToColorsEditor()
 {
   this->PrivateEventForwarder = new EventForwarder(this);
 
-	this->Borders[vtkAxis::LEFT] = 8;
-	this->Borders[vtkAxis::BOTTOM] = 1;
-	this->Borders[vtkAxis::RIGHT] = 8;
-	this->Borders[vtkAxis::TOP] = 8;
+  this->Borders[vtkAxis::LEFT] = 8;
+  this->Borders[vtkAxis::BOTTOM] = 1;
+  this->Borders[vtkAxis::RIGHT] = 8;
+  this->Borders[vtkAxis::TOP] = 8;
 
   this->LastSceneSize = vtkVector2i(0, 0);
 
@@ -78,12 +79,12 @@ ctkVTKScalarsToColorsEditor::ctkVTKScalarsToColorsEditor()
   AddItem(histogramChart.GetPointer());
 
   //Preview
-	previewChart = vtkSmartPointer<ctkVTKScalarsToColorsPreviewChart>::New();
+  previewChart = vtkSmartPointer<ctkVTKScalarsToColorsPreviewChart>::New();
   AddItem(previewChart.GetPointer());
 
   //Editor 
   overlayChart = vtkSmartPointer<ctkVTKCompositeTransferFunctionChart>::New();
-	overlayChart->SetBackgroundBrush(b);
+  overlayChart->SetBackgroundBrush(b);
   AddItem(overlayChart.GetPointer());
 
   this->SetColorTransfertFunction(colorTransferFunction);
@@ -158,6 +159,9 @@ void ctkVTKScalarsToColorsEditor::SetDiscretizableColorTransfertFunction(
     this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
   controlPoints->AddObserver(vtkControlPointsItem::CurrentPointEditEvent,
     this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
+
+  overlayChart->AddObserver(vtkCommand::CursorChangedEvent,
+    this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
 }
 
 vtkSmartPointer<vtkScalarsToColors> ctkVTKScalarsToColorsEditor::GetColorTransfertFunction()
@@ -179,23 +183,28 @@ void ctkVTKScalarsToColorsEditor::SetHistogramTable(vtkTable* table, const char*
 
 void ctkVTKScalarsToColorsEditor::SetCurrentRange(double min, double max)
 {
-	overlayChart->SetCurrentRange(min, max);
+  overlayChart->SetCurrentRange(min, max);
+}
+
+double* ctkVTKScalarsToColorsEditor::ctkVTKScalarsToColorsEditor::GetCurrentRange()
+{
+  return overlayChart->GetCurrentRange();
 }
 
 void ctkVTKScalarsToColorsEditor::CenterRange(double center)
 {
-	overlayChart->CenterRange(center);
+  overlayChart->CenterRange(center);
 }
 
 bool ctkVTKScalarsToColorsEditor::GetCurrentControlPointColor(double rgb[3])
 {
-	return overlayChart->GetCurrentControlPointColor(rgb);
+  return overlayChart->GetCurrentControlPointColor(rgb);
 }
 
 void ctkVTKScalarsToColorsEditor::SetCurrentControlPointColor(
     const double rgb[3])
 {
-	overlayChart->SetCurrentControlPointColor(rgb);
+  overlayChart->SetCurrentControlPointColor(rgb);
 }
 
 void ctkVTKScalarsToColorsEditor::SetGlobalOpacity(double opacity)
@@ -207,7 +216,6 @@ void ctkVTKScalarsToColorsEditor::InvertColorTransferFunction()
 {
   ctk::reverseColorMap(colorTransferFunction);
 }
-
 
 bool ctkVTKScalarsToColorsEditor::Paint(vtkContext2D* painter)
 {
@@ -222,39 +230,11 @@ bool ctkVTKScalarsToColorsEditor::Paint(vtkContext2D* painter)
     // Update the geometry size cache
     this->LastSceneSize.Set(sceneWidth, sceneHeight);
 
-    // Upper chart (histogram) expands, lower chart (color bar) is fixed height.
-    float x = this->Borders[vtkAxis::LEFT];
-    float y = this->Borders[vtkAxis::BOTTOM];
-
-    // Add the width of the left axis to x to make room for y labels
-    overlayChart->GetAxis(vtkAxis::LEFT)->Update();
-    float leftAxisWidth =
-      this->overlayChart->GetAxis(vtkAxis::LEFT)->GetBoundingRect(
-        painter).GetWidth();
-
-    x += leftAxisWidth;
-
-    float colorBarThickness = 20;
-    float plotWidth = sceneWidth - x - this->Borders[vtkAxis::RIGHT];
-
-    vtkRectf colorTransferFunctionChartSize(x, y, plotWidth,
-      colorBarThickness);
+    float colorBarThickness = 19;
+    vtkRectf colorTransferFunctionChartSize(0.0, -colorBarThickness, sceneWidth,
+      40 + colorBarThickness);
     previewChart->SetSize(colorTransferFunctionChartSize);
     previewChart->RecalculateBounds();
-    float bottomAxisHeight =
-      this->overlayChart->GetAxis(vtkAxis::BOTTOM)->GetBoundingRect(
-        painter).GetHeight();
-
-    float verticalMargin = bottomAxisHeight;
-    y += colorBarThickness + verticalMargin + 5;
-    vtkRectf histogramChartSize(x, y, plotWidth,
-      sceneHeight - y - this->Borders[vtkAxis::TOP]);
-
-    overlayChart->SetSize(histogramChartSize);
-    overlayChart->RecalculateBounds();
-
-    histogramChart->SetSize(histogramChartSize);
-    histogramChart->RecalculateBounds();
   }
 
   return this->Superclass::Paint(painter);

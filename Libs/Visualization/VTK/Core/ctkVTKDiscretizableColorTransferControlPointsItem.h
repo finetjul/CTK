@@ -35,24 +35,24 @@ class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKDiscretizableColorTransferControlP
 {
 public:
   vtkTypeMacro(ctkVTKDiscretizableColorTransferControlPointsItem, vtkCompositeControlPointsItem)
-	static ctkVTKDiscretizableColorTransferControlPointsItem* New();
+  static ctkVTKDiscretizableColorTransferControlPointsItem* New();
 
   bool MouseMoveEvent(const vtkContextMouseEvent &mouse) override;
-	bool MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) override;
-	bool MouseButtonPressEvent(const vtkContextMouseEvent& mouse) override;
+  bool MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) override;
+  bool MouseButtonPressEvent(const vtkContextMouseEvent& mouse) override;
 
 protected:
-	ctkVTKDiscretizableColorTransferControlPointsItem();
-	virtual ~ctkVTKDiscretizableColorTransferControlPointsItem();
+  ctkVTKDiscretizableColorTransferControlPointsItem();
+  virtual ~ctkVTKDiscretizableColorTransferControlPointsItem();
 
-	// Utility function to determine whether a position is near the piecewise
-	// function.
-	bool PointNearPiecewiseFunction(const double pos[2]);
+  // Utility function to determine whether a position is near the piecewise
+  // function.
+  bool PointNearPiecewiseFunction(const double pos[2]);
 
 private:
-	ctkVTKDiscretizableColorTransferControlPointsItem(
+  ctkVTKDiscretizableColorTransferControlPointsItem(
     const ctkVTKDiscretizableColorTransferControlPointsItem&); // Not implemented.
-	void operator=(const ctkVTKDiscretizableColorTransferControlPointsItem&); // Not implemented.
+  void operator=(const ctkVTKDiscretizableColorTransferControlPointsItem&); // Not implemented.
 };
 
 #endif

@@ -52,7 +52,7 @@ bool ctkVTKDiscretizableColorTransferControlPointsItem::MouseButtonPressEvent(
     }
   }
 
-	return this->Superclass::MouseButtonPressEvent(mouse);
+  return this->Superclass::MouseButtonPressEvent(mouse);
 }
 
 bool ctkVTKDiscretizableColorTransferControlPointsItem::
@@ -65,7 +65,7 @@ bool ctkVTKDiscretizableColorTransferControlPointsItem::
     return false;
   }
 
-	return this->Superclass::MouseButtonReleaseEvent(mouse);
+  return this->Superclass::MouseButtonReleaseEvent(mouse);
 }
 
 
@@ -79,23 +79,23 @@ bool ctkVTKDiscretizableColorTransferControlPointsItem::MouseMoveEvent(
     return false;
   }
 
-	 return this->Superclass::MouseMoveEvent(mouse);
+   return this->Superclass::MouseMoveEvent(mouse);
 }
 
 bool ctkVTKDiscretizableColorTransferControlPointsItem::
   PointNearPiecewiseFunction(const double position[2])
 {
-	double x = position[0];
-	double y = 0.0;
+  double x = position[0];
+  double y = 0.0;
 
-	vtkPiecewiseFunction* pwf = this->GetOpacityFunction();
-	if (!pwf) {
-		return false;
-	}
+  vtkPiecewiseFunction* pwf = this->GetOpacityFunction();
+  if (!pwf) {
+    return false;
+  }
 
   // Evaluate the piewewise function at the given point and get the y position.
   // If we are within a small distance of the piecewise function, return true.
   // Otherwise, we are too far away from the line, and return false.
-	pwf->GetTable(x, x, 1, &y, 1);
-	return (fabs(y - position[1]) < 0.05);
+  pwf->GetTable(x, x, 1, &y, 1);
+  return (fabs(y - position[1]) < 0.05);
 }

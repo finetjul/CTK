@@ -55,11 +55,13 @@ public:
   void SetCurrentControlPointColor(const double rgb[3]);
 
   /**
-  *  Set the current range
+  *  Set/Get the current range
   *
-  *  it will clamp values into the current dataRange
+  *  Set will clamp values into the current dataRange
   */
   void SetCurrentRange(double min, double max);
+  double* GetCurrentRange();
+
 
   /**
   * Center the current position to the given point

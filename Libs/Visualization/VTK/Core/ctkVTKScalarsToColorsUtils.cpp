@@ -39,7 +39,7 @@ void ctk::remapColorScale(vtkDiscretizableColorTransferFunction* colorTransferFu
   double rescaleWidth = maxRescale - minRescale;
   double * r = colorTransferFunction->GetRange();
   //Map to the histogram color map and to the external
-  //	rescaledColorTransferFunction->SetEnableModifiedEvents(false);
+  //  rescaledColorTransferFunction->SetEnableModifiedEvents(false);
   rescaledColorTransferFunction->RemoveAllPoints();
 
   for (int i = 0; i < colorTransferFunction->GetSize(); i++)
@@ -80,9 +80,9 @@ void ctk::remapColorScale(vtkDiscretizableColorTransferFunction* colorTransferFu
     double newPostHisto = minRescale + normalized * rescaleWidth;
     rescaledColorTransferFunction->GetScalarOpacityFunction()->AddPoint(newPostHisto, val[1], val[2], val[3]);
   }
-  //	rescaledColorTransferFunction->SetDiscretize(colorTransferFunction->GetDiscretize());
-  //	rescaledColorTransferFunction->SetNumberOfValues(colorTransferFunction->GetNumberOfValues());
-  //	rescaledColorTransferFunction->SetEnableModifiedEvents(true);
+  //  rescaledColorTransferFunction->SetDiscretize(colorTransferFunction->GetDiscretize());
+  //  rescaledColorTransferFunction->SetNumberOfValues(colorTransferFunction->GetNumberOfValues());
+  //  rescaledColorTransferFunction->SetEnableModifiedEvents(true);
   rescaledColorTransferFunction->Build();
 }
 
@@ -101,8 +101,12 @@ void ctk::remapColorScale(vtkDiscretizableColorTransferFunction* colorTransferFu
 */
 void ctk::reverseColorMap(vtkDiscretizableColorTransferFunction* ctf)
 {
+  if (ctf == nullptr)
+  {
+    return;
+  }
+
   int size = ctf->GetSize();
-  //	ctf->SetEnableModifiedEvents(false);
   for (int i = 0; i < size / 2; i++)
   {
     double val[6];
@@ -116,21 +120,28 @@ void ctk::reverseColorMap(vtkDiscretizableColorTransferFunction* ctf)
     ctf->SetNodeValue(i, valRev);
     ctf->SetNodeValue(size - 1 - i, val);
   }
-  //	ctf->SetEnableModifiedEvents(true);
   ctf->Modified();
 }
 
 void ctk::setTransparency(vtkDiscretizableColorTransferFunction* ctf, double transparency)
 {
+  if (ctf == nullptr)
+  {
+    return;
+  }
+
   //Opacity
-  //	ctf->SetEnableModifiedEvents(false);
   for (int i = 0; i < ctf->GetScalarOpacityFunction()->GetSize(); i++)
   {
     double val[4];
     ctf->GetScalarOpacityFunction()->GetNodeValue(i, val);
-    val[1] = transparency;
+
+    val[1] *= transparency;
+
+    val[1] = val[1] < 1e-6 ? 1e-6 : val[1];
+    val[1] = val[1] > 1.0 ? 1.0 : val[1];
+
     ctf->GetScalarOpacityFunction()->SetNodeValue(i, val);
   }
-  //	ctf->SetEnableModifiedEvents(true);
   ctf->Modified();
 }

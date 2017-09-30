@@ -102,6 +102,7 @@ set(KIT_MOC_SRCS
 
 # UI files
 set(KIT_UI_FORMS
+  Resources/UI/ctkVTKDiscretizableColorTransferWidget.ui
   Resources/UI/ctkVTKScalarBarWidget.ui
   Resources/UI/ctkVTKTextPropertyWidget.ui
   Resources/UI/ctkVTKPropertyWidget.ui

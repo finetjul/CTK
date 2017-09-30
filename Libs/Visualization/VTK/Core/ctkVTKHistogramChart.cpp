@@ -32,36 +32,35 @@ vtkStandardNewMacro(ctkVTKHistogramChart)
 
 ctkVTKHistogramChart::ctkVTKHistogramChart()
 {
-	this->SetBarWidthFraction(1.0);
-	this->ForceAxesToBoundsOn();
+  this->SetBarWidthFraction(1.0);
+  this->ForceAxesToBoundsOn();
 
-	this->SetLayoutStrategy(vtkChart::AXES_TO_RECT);
-	this->SetHiddenAxisBorder(10);
+    this->SetLayoutStrategy(vtkChart::FILL_SCENE);
+  for (int i = 0; i < 4; ++i)
+  {
+    this->GetAxis(i)->SetVisible(true);
+    this->GetAxis(i)->SetNumberOfTicks(0);
+    this->GetAxis(i)->SetLabelsVisible(false);
+    this->GetAxis(i)->SetMargins(1, 1);
+    this->GetAxis(i)->SetTitle("");
+  }
 
-	for (int i = 0; i < 4; ++i) {
-		this->GetAxis(i)->SetVisible(true);
-		this->GetAxis(i)->SetNumberOfTicks(0);
-		this->GetAxis(i)->SetLabelsVisible(false);
-		this->GetAxis(i)->SetMargins(1, 1);
-		this->GetAxis(i)->SetTitle("");
-	}
+  int fontSize = 12;
+  this->GetAxis(vtkAxis::LEFT)->GetLabelProperties()->SetFontSize(fontSize);
+  this->GetAxis(vtkAxis::BOTTOM)->GetLabelProperties()->SetFontSize(fontSize);
+  this->GetAxis(vtkAxis::RIGHT)->GetLabelProperties()->SetFontSize(fontSize);
 
-	int fontSize = 12;
-	this->GetAxis(vtkAxis::LEFT)->GetLabelProperties()->SetFontSize(fontSize);
-	this->GetAxis(vtkAxis::BOTTOM)->GetLabelProperties()->SetFontSize(fontSize);
-	this->GetAxis(vtkAxis::RIGHT)->GetLabelProperties()->SetFontSize(fontSize);
+  this->GetTooltip()->GetTextProperties()->SetFontSize(fontSize);
 
-	this->GetTooltip()->GetTextProperties()->SetFontSize(fontSize);
+  // Set up the plot bar
+  this->AddPlot(this->HistogramPlotBar.Get());
 
-	// Set up the plot bar
-	this->AddPlot(this->HistogramPlotBar.Get());
+  this->HistogramPlotBar->SetColor(0, 0, 255, 0);
+  this->HistogramPlotBar->GetPen()->SetLineType(vtkPen::NO_PEN);
+  this->HistogramPlotBar->SetSelectable(false);
+  this->HistogramPlotBar->SetInteractive(false);
 
-	this->HistogramPlotBar->SetColor(0, 0, 255, 0);
-	this->HistogramPlotBar->GetPen()->SetLineType(vtkPen::NO_PEN);
-	this->HistogramPlotBar->SetSelectable(false);
-	this->HistogramPlotBar->SetInteractive(false);
-
-	this->HistogramPlotBar->SetOpacity(0.15);
+  this->HistogramPlotBar->SetOpacity(0.15);
 }
 
 ctkVTKHistogramChart::~ctkVTKHistogramChart()
@@ -71,22 +70,22 @@ ctkVTKHistogramChart::~ctkVTKHistogramChart()
 void ctkVTKHistogramChart::SetHistogramInputData(vtkTable* table,
     const char* xAxisColumn, const char* yAxisColumn)
 {
-	this->HistogramPlotBar->SetInputData(table, xAxisColumn, yAxisColumn);
+  this->HistogramPlotBar->SetInputData(table, xAxisColumn, yAxisColumn);
   this->SelectColorArray(xAxisColumn);
-	RecalculateBounds();
+  RecalculateBounds();
 }
 
 void ctkVTKHistogramChart::SetScalarVisibility(bool visible)
 {
-	this->HistogramPlotBar->SetScalarVisibility(visible);
+  this->HistogramPlotBar->SetScalarVisibility(visible);
 }
 
 void ctkVTKHistogramChart::SetLookupTable(vtkScalarsToColors* lut)
 {
-	this->HistogramPlotBar->SetLookupTable(lut);
+  this->HistogramPlotBar->SetLookupTable(lut);
 }
 
 void ctkVTKHistogramChart::SelectColorArray(const char* arrayName)
 {
-	this->HistogramPlotBar->SelectColorArray(arrayName);
+  this->HistogramPlotBar->SelectColorArray(arrayName);
 }

@@ -58,8 +58,7 @@ signals:
   void currentScalarsToColorsChanged(vtkScalarsToColors* ctf);
 
 public slots:
-  void transparencyChanged(double opacity);
-  void onScalarOpacityFunctionChanged();
+  void onGlobalOpacitySliderValueChanged(double opacity);
 
   void onCurrentPointChanged();
   void onCurrentPointEdit();
@@ -68,9 +67,14 @@ public slots:
   void onResetRangeClicked();
   void onCenterRangeClicked();
   void onInvertClicked();
-  void onRangeEditorReturn();
 
   void onPaletteIndexChanged(vtkScalarsToColors* ctf);
+
+  void onOptionButtonClicked();
+  void onNaNButtonClicked();
+  void onDiscretizeCheckBoxStateChanged(int state);
+  void onDiscreteClassesSpinBoxValueChanged(int value);
+  void onRangeSliderValuesChanged(double minValue, double maxValue);
 
 protected:
   QScopedPointer<ctkVTKDiscretizableColorTransferWidgetPrivate> d_ptr;
@@ -78,6 +82,5 @@ protected:
 private:
   Q_DECLARE_PRIVATE(ctkVTKDiscretizableColorTransferWidget);
   Q_DISABLE_COPY(ctkVTKDiscretizableColorTransferWidget);
-
 };
 #endif // __ctkVTKDiscretizableColorTransferWidget_h

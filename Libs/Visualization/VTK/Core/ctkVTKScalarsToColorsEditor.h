@@ -55,17 +55,18 @@ public:
 
   void SetHistogramTable(vtkTable* table, const char* xAxisColumn, const char* yAxisColumn);
 
-	// Paint event for the editor.
+  // Paint event for the editor.
   virtual bool Paint(vtkContext2D* painter) override;
 
-	// is a currently selected control point, false otherwise.
-	bool GetCurrentControlPointColor(double rgb[3]);
+  // is a currently selected control point, false otherwise.
+  bool GetCurrentControlPointColor(double rgb[3]);
 
-	// Set the color of the current color control point.
-	void SetCurrentControlPointColor(const double rgb[3]);
+  // Set the color of the current color control point.
+  void SetCurrentControlPointColor(const double rgb[3]);
 
-	void SetCurrentRange(double min, double max);
-	void CenterRange(double center);
+  void SetCurrentRange(double min, double max);
+  double* GetCurrentRange();
+  void CenterRange(double center);
 
   void SetGlobalOpacity(double opacity);
   void InvertColorTransferFunction();
@@ -77,8 +78,8 @@ protected:
 
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> colorTransferFunction;
 
-	double dataRangeMin;
-	double dataRangeMax;
+  double dataRangeMin;
+  double dataRangeMax;
 
 private:
   ctkVTKScalarsToColorsEditor();
@@ -87,7 +88,7 @@ private:
   // Cached geometry of the chart
   vtkVector2i LastSceneSize;
 
-	float Borders[4];
+  float Borders[4];
 
   class EventForwarder;
     EventForwarder* PrivateEventForwarder;

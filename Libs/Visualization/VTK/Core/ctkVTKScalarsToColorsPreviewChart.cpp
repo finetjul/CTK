@@ -29,24 +29,24 @@ vtkStandardNewMacro(ctkVTKScalarsToColorsPreviewChart)
 
 ctkVTKScalarsToColorsPreviewChart::ctkVTKScalarsToColorsPreviewChart()
 {
-	ForceAxesToBoundsOn();
-	SetAutoSize(true);
-	SetAutoAxes(true);
-	SetHiddenAxisBorder(8);
-	SetRenderEmpty(true);
-	SetLayoutStrategy(vtkChart::AXES_TO_RECT);
-	ZoomWithMouseWheelOff();
+  ForceAxesToBoundsOn();
+  SetAutoSize(true);
+  SetAutoAxes(false);
+  SetRenderEmpty(true);
+  SetLayoutStrategy(vtkChart::FILL_RECT);
+  ZoomWithMouseWheelOff();
 
-	for (int i = 0; i < 4; ++i) {
-		GetAxis(i)->SetVisible(true);
-		GetAxis(i)->SetNumberOfTicks(0);
-		GetAxis(i)->SetBehavior(vtkAxis::AUTO);
-		GetAxis(i)->SetLabelsVisible(false);
-		GetAxis(i)->SetMargins(1, 1);
-		GetAxis(i)->SetTitle("");
-	}
+  for (int i = 0; i < 4; ++i)
+  {
+    GetAxis(i)->SetVisible(true);
+    GetAxis(i)->SetNumberOfTicks(0);
+    GetAxis(i)->SetBehavior(vtkAxis::AUTO);
+    GetAxis(i)->SetLabelsVisible(false);
+    GetAxis(i)->SetMargins(1, 1);
+    GetAxis(i)->SetTitle("");
+  }
 
-	SetInteractive(false);
+  SetInteractive(false);
 }
 
 void ctkVTKScalarsToColorsPreviewChart::SetColorTransferFunction(vtkColorTransferFunction* function)

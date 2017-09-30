@@ -30,17 +30,17 @@ class ctkVTKHistogramMarker: public vtkObject
 {
 public:
 
-	static ctkVTKHistogramMarker* New();
+  static ctkVTKHistogramMarker* New();
 
-	ctkVTKHistogramMarker();
-	virtual ~ctkVTKHistogramMarker();
+  ctkVTKHistogramMarker();
+  virtual ~ctkVTKHistogramMarker();
 
-	void SetPosition(double pos);
+  void SetPosition(double pos);
 
-	vtkSmartPointer<vtkTable> getTable();
+  vtkSmartPointer<vtkTable> getTable();
 
 private:
-	vtkSmartPointer<vtkTable> m_table;
+  vtkSmartPointer<vtkTable> m_table;
 
 };
 
