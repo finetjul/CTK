@@ -34,9 +34,6 @@
 #include <vtkTable.h>
 #include <vtkVector.h>
 
-double ctkVTKScalarsToColorsEditor::BACKGROUND_COLOR[3]
-  = {49.0 / 256, 54.0 / 256, 59.0 / 256};
-
 class ctkVTKScalarsToColorsEditor::EventForwarder
 {
 public:
@@ -160,12 +157,12 @@ void ctkVTKScalarsToColorsEditor::SetDiscretizableColorTransferFunction(
     this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
 }
 
-vtkSmartPointer<vtkScalarsToColors> ctkVTKScalarsToColorsEditor::GetColorTransferFunction()
+vtkScalarsToColors* ctkVTKScalarsToColorsEditor::GetColorTransferFunction()
 {
   return colorTransferFunction;
 }
 
-vtkSmartPointer<vtkDiscretizableColorTransferFunction>
+vtkDiscretizableColorTransferFunction*
   ctkVTKScalarsToColorsEditor::GetDiscretizableColorTransferFunction()
 {
   return colorTransferFunction;
@@ -182,7 +179,7 @@ void ctkVTKScalarsToColorsEditor::SetCurrentRange(double min, double max)
   overlayChart->SetCurrentRange(min, max);
 }
 
-double* ctkVTKScalarsToColorsEditor::ctkVTKScalarsToColorsEditor::GetCurrentRange()
+double* ctkVTKScalarsToColorsEditor::GetCurrentRange()
 {
   return overlayChart->GetCurrentRange();
 }
@@ -213,9 +210,9 @@ void ctkVTKScalarsToColorsEditor::InvertColorTransferFunction()
   ctk::reverseColorMap(colorTransferFunction);
 }
 
-bool ctkVTKScalarsToColorsEditor::ProcessingColorTransferFunction()
+bool ctkVTKScalarsToColorsEditor::IsProcessingColorTransferFunction()
 {
-  return this->overlayChart->ProcessingColorTransferFunction();
+  return this->overlayChart->IsProcessingColorTransferFunction();
 }
 
 bool ctkVTKScalarsToColorsEditor::Paint(vtkContext2D* painter)

@@ -42,13 +42,22 @@ class QToolButton;
 
 class CTK_VISUALIZATION_VTK_WIDGETS_EXPORT ctkVTKDiscretizableColorTransferWidget: public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
+  /// This property controls the color of the view.
+  /// Dark gray by default.
+  /// \accessors viewBackgroundColor() setViewBackgroundColor()
+  Q_PROPERTY(QColor viewBackgroundColor READ viewBackgroundColor WRITE setViewBackgroundColor)
 public:
   explicit ctkVTKDiscretizableColorTransferWidget(QWidget* parent_ = nullptr);
   virtual ~ctkVTKDiscretizableColorTransferWidget();
 
   void setColorTransferFunction(vtkScalarsToColors* ctf);
+  vtkScalarsToColors* colorTransferFunction() const;
+
   void setHistogram(vtkImageAccumulate* hist);
+
+  void setViewBackgroundColor(const QColor& i_color);
+  QColor viewBackgroundColor() const;
 
 signals:
   void currentScalarsToColorsModified();

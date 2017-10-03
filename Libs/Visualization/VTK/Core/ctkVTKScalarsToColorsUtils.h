@@ -41,7 +41,9 @@ void CTK_VISUALIZATION_VTK_CORE_EXPORT remapColorScale(
 
 /// Reverse color transfer function
 void CTK_VISUALIZATION_VTK_CORE_EXPORT reverseColorMap(vtkDiscretizableColorTransferFunction* colorTransferFunction);
-/// Set global opacity of the color transfer function
+
+/// Set global opacity of the color transfer function.
+/// Transparency is multiplied to each node opacity.
 void CTK_VISUALIZATION_VTK_CORE_EXPORT setTransparency(vtkDiscretizableColorTransferFunction* colorTransferFunction, double transparency);
 }
 

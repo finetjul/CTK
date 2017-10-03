@@ -40,9 +40,6 @@ public:
   vtkTypeMacro(ctkVTKCompositeTransferFunctionChart, vtkChartXY)
   static ctkVTKCompositeTransferFunctionChart* New();
 
-  virtual bool MouseMoveEvent(const vtkContextMouseEvent &mouse) override;
-  virtual bool MouseButtonPressEvent(const vtkContextMouseEvent& mouse) override;
-  virtual bool MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) override;
 
   void SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function);
   void SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function,
@@ -70,7 +67,11 @@ public:
 
   vtkCompositeControlPointsItem* GetControlPointsItem();
 
-  bool ProcessingColorTransferFunction();
+  bool IsProcessingColorTransferFunction() const;
+
+  bool MouseMoveEvent(const vtkContextMouseEvent &mouse) VTK_OVERRIDE;
+  bool MouseButtonPressEvent(const vtkContextMouseEvent& mouse) VTK_OVERRIDE;
+  bool MouseButtonReleaseEvent(const vtkContextMouseEvent &mouse) VTK_OVERRIDE;
 
 private:
   void updateMarkerPosition(const vtkContextMouseEvent& m);
@@ -82,24 +83,24 @@ protected:
   vtkSmartPointer<vtkTransform2D> Transform;
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> workingFunction;
 
-  vtkPlot *minPlot;
-  vtkPlot *maxPlot;
-  vtkPlot *minLinePlot;
-  vtkPlot *maxLinePlot;
-  vtkPlot *minDataPlot;
-  vtkPlot *maxDataPlot;
-  vtkSmartPointer<ctkVTKHistogramMarker> minMarker;
-  vtkSmartPointer<ctkVTKHistogramMarker> maxMarker;
-  vtkSmartPointer<ctkVTKHistogramMarker> minDataMarker;
-  vtkSmartPointer<ctkVTKHistogramMarker> maxDataMarker;
+  vtkPlot *MinPlot;
+  vtkPlot *MaxPlot;
+  vtkPlot *MinLinePlot;
+  vtkPlot *MaxLinePlot;
+  vtkPlot *MinDataPlot;
+  vtkPlot *MaxDataPlot;
+  vtkSmartPointer<ctkVTKHistogramMarker> MinMarker;
+  vtkSmartPointer<ctkVTKHistogramMarker> MaxMarker;
+  vtkSmartPointer<ctkVTKHistogramMarker> MinDataMarker;
+  vtkSmartPointer<ctkVTKHistogramMarker> MaxDataMarker;
 
   enum class RangeMoving {
     NONE, MIN, MAX
   } rangeMoving = RangeMoving::NONE;
-  double dataRange[2];
-  double currentRange[2];
+  double DataRange[2];
+  double CurrentRange[2];
 
-  bool processingColorTransferFunction;
+  bool ProcessingColorTransferFunction;
 
 private:
   ctkVTKCompositeTransferFunctionChart();

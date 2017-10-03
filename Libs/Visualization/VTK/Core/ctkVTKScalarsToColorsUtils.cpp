@@ -23,6 +23,7 @@
 
 // VTK includes
 #include <vtkDiscretizableColorTransferFunction.h>
+#include <vtkMath.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkScalarsToColors.h>
 
@@ -33,27 +34,27 @@ static ctkLogger logger("org.commontk.visualization.vtk.core.ctkVTKScalarsToColo
 void ctk::remapColorScale(vtkDiscretizableColorTransferFunction* colorTransferFunction,
   vtkDiscretizableColorTransferFunction* rescaledColorTransferFunction, double minRescale, double maxRescale)
 {
-  //The code for internal and external colortables could be in the same loops but to make
+  // The code for internal and external colortables could be in the same loops but to make
   // this clear about having or not set the pointer, we do it like this
-  //Color
+
+  // Color
   double rescaleWidth = maxRescale - minRescale;
-  double * r = colorTransferFunction->GetRange();
-  //Map to the histogram color map and to the external
-  //  rescaledColorTransferFunction->SetEnableModifiedEvents(false);
+  double* range = colorTransferFunction->GetRange();
+  // Map to the histogram color map and to the external
   rescaledColorTransferFunction->RemoveAllPoints();
 
   for (int i = 0; i < colorTransferFunction->GetSize(); i++)
   {
     double val[6];
     colorTransferFunction->GetNodeValue(i, val);
-    double normalized = (val[0] - r[0]) / (r[1] - r[0]);
+    double normalized = (val[0] - range[0]) / (range[1] - range[0]);
 
-    double newPostHisto = minRescale + normalized * rescaleWidth;
-    rescaledColorTransferFunction->AddRGBPoint(newPostHisto, val[1], val[2], val[3], val[4], val[5]);
+    double newX = minRescale + normalized * rescaleWidth;
+    rescaledColorTransferFunction->AddRGBPoint(newX, val[1], val[2], val[3], val[4], val[5]);
   }
 
-  //Opacity
-  if (rescaledColorTransferFunction->GetScalarOpacityFunction())
+  // Opacity
+  if (rescaledColorTransferFunction->GetScalarOpacityFunction() != nullptr)
   {
     rescaledColorTransferFunction->GetScalarOpacityFunction()->RemoveAllPoints();
   }
@@ -64,25 +65,15 @@ void ctk::remapColorScale(vtkDiscretizableColorTransferFunction* colorTransferFu
     rescaledColorTransferFunction->SetScalarOpacityFunction(opacityFunction);
   }
 
-  if (!colorTransferFunction->GetScalarOpacityFunction())
-  {
-    vtkSmartPointer<vtkPiecewiseFunction> opacityFunction =
-      vtkSmartPointer<vtkPiecewiseFunction>::New();
-    colorTransferFunction->SetScalarOpacityFunction(opacityFunction);
-  }
-
   for (int i = 0; i < colorTransferFunction->GetScalarOpacityFunction()->GetSize(); i++)
   {
     double val[4];
     colorTransferFunction->GetScalarOpacityFunction()->GetNodeValue(i, val);
-    double normalized = (val[0] - r[0]) / (r[1] - r[0]);
+    double normalized = (val[0] - range[0]) / (range[1] - range[0]);
 
-    double newPostHisto = minRescale + normalized * rescaleWidth;
-    rescaledColorTransferFunction->GetScalarOpacityFunction()->AddPoint(newPostHisto, val[1], val[2], val[3]);
+    double newX = minRescale + normalized * rescaleWidth;
+    rescaledColorTransferFunction->GetScalarOpacityFunction()->AddPoint(newX, val[1], val[2], val[3]);
   }
-  //  rescaledColorTransferFunction->SetDiscretize(colorTransferFunction->GetDiscretize());
-  //  rescaledColorTransferFunction->SetNumberOfValues(colorTransferFunction->GetNumberOfValues());
-    //rescaledColorTransferFunction->SetEnableModifiedEvents(true);
   rescaledColorTransferFunction->Build();
 }
 
@@ -130,18 +121,13 @@ void ctk::setTransparency(vtkDiscretizableColorTransferFunction* ctf, double tra
     return;
   }
 
-  //Opacity
-  for (int i = 0; i < ctf->GetScalarOpacityFunction()->GetSize(); i++)
+  for (int i = 0; i < ctf->GetScalarOpacityFunction()->GetSize(); ++i)
   {
     double val[4];
     ctf->GetScalarOpacityFunction()->GetNodeValue(i, val);
 
-    val[1] *= transparency;
-
-    val[1] = val[1] < 1e-6 ? 1e-6 : val[1];
-    val[1] = val[1] > 1.0 ? 1.0 : val[1];
+    val[1] = vtkMath::ClampValue(1e-6, val[1] * transparency, 1.);
 
     ctf->GetScalarOpacityFunction()->SetNodeValue(i, val);
   }
-  ctf->Modified();
 }

@@ -85,6 +85,8 @@ public:
   QSpinBox* nbOfDiscreteValuesSpinBox;
   QWidget* optionPanel;
 
+  /// Stores the range of the data.
+  /// Extracted from the histogram
   double dataRange[2];
   double dataMean;
 
@@ -102,7 +104,7 @@ ctkVTKDiscretizableColorTransferWidgetPrivate
 {
   this->scalarsToColorsSelector = nullptr;
 
-  //Option part
+  // Option menu
   this->nanButton = nullptr;
   this->discretizeCheckBox = nullptr;
   this->nbOfDiscreteValuesSpinBox = nullptr;
@@ -113,9 +115,9 @@ ctkVTKDiscretizableColorTransferWidgetPrivate
 
   this->previousOpacityValue = 0.;
 
-  colorTransferFunctionModified = vtkSmartPointer<vtkCallbackCommand>::New();
-  colorTransferFunctionModified->SetClientData(this);
-  colorTransferFunctionModified->SetCallback(this->colorTransferFunctionModifiedCallback);
+  this->colorTransferFunctionModified = vtkSmartPointer<vtkCallbackCommand>::New();
+  this->colorTransferFunctionModified->SetClientData(this);
+  this->colorTransferFunctionModified->SetCallback(this->colorTransferFunctionModifiedCallback);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,24 +129,23 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
 
   this->scalarsToColorsEditor = vtkSmartPointer<ctkVTKScalarsToColorsEditor>::New();
   this->histogramView = vtkSmartPointer<vtkContextView> ::New();
-  this->eventLink = vtkSmartPointer<vtkEventQtSlotConnect>::New();
 
   this->histogramView->GetScene()->AddItem(this->scalarsToColorsEditor.Get());
   this->histogramView->SetInteractor(this->scalarsToColorsView->GetInteractor());
   this->scalarsToColorsView->SetRenderWindow(this->histogramView->GetRenderWindow());
 
-  this->histogramView->GetRenderWindow()->Render();
-  this->histogramView->GetRenderer()->SetBackground(
-    ctkVTKScalarsToColorsEditor::BACKGROUND_COLOR);
+  //this->histogramView->GetRenderWindow()->Render(); really needed ?
+  q->setViewBackgroundColor(QColor(49, 54, 59));
 
   this->previousOpacityValue = opacitySlider->value();
 
   this->scalarsToColorsSelector->addScalarsToColors(nullptr, q->tr("Reset"));
   this->scalarsToColorsSelector->setCurrentIndex(-1);
 
-  eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointEditEvent,
+  this->eventLink = vtkSmartPointer<vtkEventQtSlotConnect>::New();
+  this->eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointEditEvent,
     q, SLOT(onCurrentPointEdit()));
-  eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointChangedEvent,
+  this->eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointChangedEvent,
     q, SLOT(onCurrentPointChanged()));
 
   QObject::connect(scalarsToColorsSelector, SIGNAL(currentScalarsToColorsChanged(vtkScalarsToColors*)),
@@ -389,8 +390,8 @@ void ctkVTKDiscretizableColorTransferWidget::setNaNColor()
 
   double r, g, b;
   d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->GetNanColor(r, g, b);
-  QColor selected = QColorDialog::getColor(QColor(255 * r, 255 * g, 255 * b, 255),
-    d->optionPanel, "Select NaN values color", QColorDialog::DontUseNativeDialog);
+  QColor selected = QColorDialog::getColor(QColor::fromRgbF(r, g, b),
+    d->optionPanel, "Select NaN color", QColorDialog::DontUseNativeDialog);
   d->nanButton->setIcon(d->getColorIcon(selected));
   d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->SetNanColor(
     selected.redF(), selected.greenF(), selected.blueF());
@@ -408,6 +409,7 @@ void ctkVTKDiscretizableColorTransferWidget::setDiscretize(bool checked)
 void ctkVTKDiscretizableColorTransferWidget::setNumberOfDiscreteValues(int value)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
+
   d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->SetNumberOfValues(value);
 }
 
@@ -418,7 +420,6 @@ void ctkVTKDiscretizableColorTransferWidget::setColorTransferFunctionRange(doubl
 
   d->scalarsToColorsEditor->SetCurrentRange(minValue, maxValue);
 }
-
 
 // ----------------------------------------------------------------------------
 void ctkVTKDiscretizableColorTransferWidget::onCurrentPointChanged()
@@ -432,7 +433,7 @@ void ctkVTKDiscretizableColorTransferWidget::onCurrentPointEdit()
   double rgb[3];
   if (d->scalarsToColorsEditor->GetCurrentControlPointColor(rgb))
   {
-    QColor color = QColorDialog::getColor(QColor::fromRgbF(rgb[0], rgb[1], rgb[2]), this, "Select Color for Control Point",
+    QColor color = QColorDialog::getColor(QColor::fromRgbF(rgb[0], rgb[1], rgb[2]), this, "Select color at point",
         QColorDialog::DontUseNativeDialog);
     if (color.isValid())
     {
@@ -474,4 +475,19 @@ void ctkVTKDiscretizableColorTransferWidget::invertColorTransferFunction()
   d->scalarsToColorsEditor->InvertColorTransferFunction();
 }
 
+// ----------------------------------------------------------------------------
+void ctkVTKDiscretizableColorTransferWidget::setViewBackgroundColor(const QColor& i_color)
+{
+  Q_D(ctkVTKDiscretizableColorTransferWidget);
+  d->histogramView->GetRenderer()->SetBackground(
+    i_color.redF(), i_color.greenF(), i_color.blueF());
+}
 
+// ----------------------------------------------------------------------------
+QColor ctkVTKDiscretizableColorTransferWidget::viewBackgroundColor() const
+{
+  Q_D(const ctkVTKDiscretizableColorTransferWidget);
+  double rgb[3];
+  d->histogramView->GetRenderer()->GetBackground(rgb);
+  return QColor::fromRgbF(rgb[0], rgb[1], rgb[2]);
+}

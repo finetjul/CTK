@@ -41,28 +41,26 @@ class vtkTable;
 class CTK_VISUALIZATION_VTK_CORE_EXPORT ctkVTKScalarsToColorsEditor
   : public vtkAbstractContextItem
 {
-public:
-  static double BACKGROUND_COLOR[3];
-
   vtkTypeMacro(ctkVTKScalarsToColorsEditor, vtkAbstractContextItem)
+public:
   static ctkVTKScalarsToColorsEditor* New();
 
   void SetColorTransferFunction(vtkScalarsToColors* ctf);
-  vtkSmartPointer<vtkScalarsToColors> GetColorTransferFunction();
+  vtkScalarsToColors* GetColorTransferFunction();
 
   void SetDiscretizableColorTransferFunction(vtkDiscretizableColorTransferFunction* dctf);
-  vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetDiscretizableColorTransferFunction();
+  vtkDiscretizableColorTransferFunction* GetDiscretizableColorTransferFunction();
 
   void SetHistogramTable(vtkTable* table, const char* xAxisColumn, const char* yAxisColumn);
 
   // Paint event for the editor.
-  virtual bool Paint(vtkContext2D* painter) override;
-
-  // is a currently selected control point, false otherwise.
-  bool GetCurrentControlPointColor(double rgb[3]);
+  bool Paint(vtkContext2D* painter) override;
 
   // Set the color of the current color control point.
   void SetCurrentControlPointColor(const double rgb[3]);
+
+  // is a currently selected control point, false otherwise.
+  bool GetCurrentControlPointColor(double rgb[3]);
 
   void SetCurrentRange(double min, double max);
   double* GetCurrentRange();
@@ -71,7 +69,7 @@ public:
   void SetGlobalOpacity(double opacity);
   void InvertColorTransferFunction();
 
-  bool ProcessingColorTransferFunction();
+  bool IsProcessingColorTransferFunction() const;
 
 protected:
   vtkSmartPointer<ctkVTKCompositeTransferFunctionChart> overlayChart;
@@ -93,6 +91,6 @@ private:
   float Borders[4];
 
   class EventForwarder;
-    EventForwarder* PrivateEventForwarder;
+  EventForwarder* PrivateEventForwarder;
 };
 #endif // __ctkVTKScalarsToColorsEditor_h

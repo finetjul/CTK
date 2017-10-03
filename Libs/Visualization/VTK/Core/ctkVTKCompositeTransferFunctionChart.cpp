@@ -167,7 +167,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
 
   if (rangeMoving == RangeMoving::MIN)
   {
-    double newValue = (double)pos.GetX();
+    double newValue = static_cast<double>(pos.GetX());
     if (newValue < dataRange[0])
     {
       currentRange[0] = dataRange[0];
@@ -188,7 +188,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
   }
   else if (rangeMoving == RangeMoving::MAX)
   {
-    double newValue = (double)pos.GetX();
+    double newValue = static_cast<double>(pos.GetX());
     if (newValue > dataRange[1])
     {
       currentRange[1] = dataRange[1];
@@ -358,7 +358,7 @@ ctkVTKCompositeTransferFunctionChart::GetControlPointsItem()
   return controlPoints;
 }
 
-bool ctkVTKCompositeTransferFunctionChart::ProcessingColorTransferFunction()
+bool ctkVTKCompositeTransferFunctionChart::IsProcessingColorTransferFunction() const
 {
   return processingColorTransferFunction;
 }
