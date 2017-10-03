@@ -81,8 +81,8 @@ public:
 
   //Option part
   QToolButton* nanButton;
-  QCheckBox* discretizeCheck;
-  QSpinBox* classesDiscret;
+  QCheckBox* discretizeCheckBox;
+  QSpinBox* nbOfDiscreteValuesSpinBox;
   QWidget* optionPanel;
 
   double dataRange[2];
@@ -104,8 +104,8 @@ ctkVTKDiscretizableColorTransferWidgetPrivate
 
   //Option part
   this->nanButton = nullptr;
-  this->discretizeCheck = nullptr;
-  this->classesDiscret = nullptr;
+  this->discretizeCheckBox = nullptr;
+  this->nbOfDiscreteValuesSpinBox = nullptr;
 
   this->dataRange[0] = VTK_DOUBLE_MAX;
   this->dataRange[1] = VTK_DOUBLE_MIN;
@@ -172,24 +172,24 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   panelLayout->addWidget(nanLabel, 0, 0);
   panelLayout->addWidget(nanButton, 0, 1);
 
-  discretizeCheck = new QCheckBox;
-  discretizeCheck->setText("Discretize");
-  classesDiscret = new QSpinBox;
-  classesDiscret->setMinimum(1);
-  classesDiscret->setMaximum(255);
-  classesDiscret->setEnabled(discretizeCheck->isChecked());
-  panelLayout->addWidget(discretizeCheck, 1, 0);
-  panelLayout->addWidget(classesDiscret, 1, 1);
+  discretizeCheckBox = new QCheckBox;
+  discretizeCheckBox->setText("Discretize");
+  nbOfDiscreteValuesSpinBox = new QSpinBox;
+  nbOfDiscreteValuesSpinBox->setMinimum(1);
+  nbOfDiscreteValuesSpinBox->setMaximum(255);
+  nbOfDiscreteValuesSpinBox->setEnabled(discretizeCheckBox->isChecked());
+  panelLayout->addWidget(discretizeCheckBox, 1, 0);
+  panelLayout->addWidget(nbOfDiscreteValuesSpinBox, 1, 1);
 
   QObject::connect(optionButton, SIGNAL(clicked()), q, SLOT(toggleOptionPanelVisibility()));
 
   QObject::connect(nanButton, SIGNAL(clicked()), q, SLOT(setNaNColor()));
 
-  QObject::connect(discretizeCheck, SIGNAL(toggled(bool)), q, SLOT(setDiscretize(bool)));
+  QObject::connect(discretizeCheckBox, SIGNAL(toggled(bool)), q, SLOT(setDiscretize(bool)));
 
-  QObject::connect(classesDiscret, SIGNAL(valueChanged(int)), q, SLOT(setNumberOfDiscreteValues(int)));
+  QObject::connect(nbOfDiscreteValuesSpinBox, SIGNAL(valueChanged(int)), q, SLOT(setNumberOfDiscreteValues(int)));
 
-  QObject::connect(discretizeCheck, SIGNAL(toggled(bool)), classesDiscret, SLOT(setEnabled(bool)));
+  QObject::connect(discretizeCheckBox, SIGNAL(toggled(bool)), nbOfDiscreteValuesSpinBox, SLOT(setEnabled(bool)));
 }
 
 // ----------------------------------------------------------------------------
@@ -224,11 +224,11 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::colorTransferFunctionModifie
     dctf->Build();
   }
 
-  self->discretizeCheck->setChecked(dctf->GetDiscretize());
+  self->discretizeCheckBox->setChecked(dctf->GetDiscretize());
 
   if (dctf->GetDiscretize())
   {
-    self->classesDiscret->setValue(dctf->GetNumberOfValues());
+    self->nbOfDiscreteValuesSpinBox->setValue(dctf->GetNumberOfValues());
   }
 
   double* newRange = self->scalarsToColorsEditor->GetCurrentRange();
