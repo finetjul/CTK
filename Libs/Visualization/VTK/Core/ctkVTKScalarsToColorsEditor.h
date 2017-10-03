@@ -71,6 +71,8 @@ public:
   void SetGlobalOpacity(double opacity);
   void InvertColorTransferFunction();
 
+  bool ProcessingColorTransferFunction();
+
 protected:
   vtkSmartPointer<ctkVTKCompositeTransferFunctionChart> overlayChart;
   vtkSmartPointer<ctkVTKScalarsToColorsPreviewChart> previewChart;

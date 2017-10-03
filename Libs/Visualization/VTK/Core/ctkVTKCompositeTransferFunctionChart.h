@@ -70,6 +70,8 @@ public:
 
   vtkCompositeControlPointsItem* GetControlPointsItem();
 
+  bool ProcessingColorTransferFunction();
+
 private:
   void updateMarkerPosition(const vtkContextMouseEvent& m);
 
@@ -96,6 +98,8 @@ protected:
   } rangeMoving = RangeMoving::NONE;
   double dataRange[2];
   double currentRange[2];
+
+  bool processingColorTransferFunction;
 
 private:
   ctkVTKCompositeTransferFunctionChart();

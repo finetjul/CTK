@@ -213,6 +213,11 @@ void ctkVTKScalarsToColorsEditor::InvertColorTransferFunction()
   ctk::reverseColorMap(colorTransferFunction);
 }
 
+bool ctkVTKScalarsToColorsEditor::ProcessingColorTransferFunction()
+{
+  return this->overlayChart->ProcessingColorTransferFunction();
+}
+
 bool ctkVTKScalarsToColorsEditor::Paint(vtkContext2D* painter)
 {
   vtkContextScene* scene = this->GetScene();

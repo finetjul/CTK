@@ -64,6 +64,8 @@ ctkVTKCompositeTransferFunctionChart::ctkVTKCompositeTransferFunctionChart()
 
   compositeHiddenItem = nullptr;
   controlPoints = nullptr;
+
+  processingColorTransferFunction = false;
 }
 
 void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretizableColorTransferFunction* function)
@@ -178,7 +180,9 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     minMarker->SetPosition(currentRange[0]);
     if (workingFunction)
     {
+      processingColorTransferFunction = true;
       ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
+      processingColorTransferFunction = false;
     }
     //minPlot->Modified();
   }
@@ -197,10 +201,13 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     maxMarker->SetPosition(currentRange[1]);
     if (workingFunction)
     {
+      processingColorTransferFunction = true;
       ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
+      processingColorTransferFunction = false;
     }
   }
 
+  workingFunction->Modified();
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }
 
@@ -317,9 +324,12 @@ void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double ma
 
   if (workingFunction)
   {
+    processingColorTransferFunction = true;
     ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
+    processingColorTransferFunction = false;
   }
 
+  workingFunction->Modified();
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }
 
@@ -347,3 +357,9 @@ ctkVTKCompositeTransferFunctionChart::GetControlPointsItem()
 {
   return controlPoints;
 }
+
+bool ctkVTKCompositeTransferFunctionChart::ProcessingColorTransferFunction()
+{
+  return processingColorTransferFunction;
+}
+

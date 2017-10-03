@@ -214,6 +214,11 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::colorTransferFunctionModifie
   vtkSmartPointer<vtkDiscretizableColorTransferFunction> dctf =
     self->scalarsToColorsEditor->GetDiscretizableColorTransferFunction();
 
+  if (self->scalarsToColorsEditor->ProcessingColorTransferFunction())
+  {
+    return;
+  }
+
   if (dctf->GetDiscretize())
   {
     dctf->Build();
@@ -234,8 +239,7 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::colorTransferFunctionModifie
   QColor selected = QColor::fromRgbF(r, g, b);
   self->nanButton->setIcon(self->getColorIcon(selected));
 
-  //TODO: fix remapColorScale
-  //self->scalarsToColorsView->GetInteractor()->Render();
+  self->scalarsToColorsView->GetInteractor()->Render();
 }
 
 // ----------------------------------------------------------------------------
