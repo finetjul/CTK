@@ -36,15 +36,22 @@ ctkVTKScalarsToColorsPreviewChart::ctkVTKScalarsToColorsPreviewChart()
   SetLayoutStrategy(vtkChart::FILL_RECT);
   ZoomWithMouseWheelOff();
 
+
   for (int i = 0; i < 4; ++i)
   {
     GetAxis(i)->SetVisible(true);
     GetAxis(i)->SetNumberOfTicks(0);
     GetAxis(i)->SetBehavior(vtkAxis::AUTO);
     GetAxis(i)->SetLabelsVisible(false);
-    GetAxis(i)->SetMargins(1, 1);
+    GetAxis(i)->SetMargins(0,0);
     GetAxis(i)->SetTitle("");
   }
+  GetAxis(vtkAxis::LEFT)->SetVisible(true);
+  GetAxis(vtkAxis::LEFT)->SetMargins(20, 0);
+  GetAxis(vtkAxis::RIGHT)->SetVisible(true);
+  GetAxis(vtkAxis::RIGHT)->SetMargins(20, 0);
+  GetAxis(vtkAxis::BOTTOM)->SetVisible(false);
+  GetAxis(vtkAxis::TOP)->SetVisible(false);
 
   SetInteractive(false);
 }
@@ -59,19 +66,16 @@ void ctkVTKScalarsToColorsPreviewChart::SetColorTransferFunction(vtkColorTransfe
   compositeVisibleItem->SetInteractive(false);
   compositeVisibleItem->SetOpacity(1);
   compositeVisibleItem->SelectableOff();
-  compositeVisibleItem->SetColorTransferFunction(function);
-  AddPlot(compositeVisibleItem);
-
   if (function == nullptr)
   {
     vtkSmartPointer<vtkColorTransferFunction> ctf =
       vtkSmartPointer<vtkColorTransferFunction>::New();
     compositeVisibleItem->SetColorTransferFunction(ctf);
-    AddPlot(compositeVisibleItem);
-    return;
   }
-
-  compositeVisibleItem->SetColorTransferFunction(function);
+  else
+  {
+    compositeVisibleItem->SetColorTransferFunction(function);
+  }
   AddPlot(compositeVisibleItem);
 }
 

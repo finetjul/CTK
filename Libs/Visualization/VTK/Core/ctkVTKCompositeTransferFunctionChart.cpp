@@ -91,9 +91,6 @@ void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretiz
   compositeHiddenItem->SetOpacity(0);
   compositeHiddenItem->SetInteractive(false);
 
-  if (controlPoints != nullptr)
-    controlPoints->RemoveAllObservers();
-
   controlPoints = vtkSmartPointer<ctkVTKDiscretizableColorTransferControlPointsItem>::New();
 
   controlPoints->SetUseOpacityPointHandles(false);
@@ -153,11 +150,6 @@ void ctkVTKCompositeTransferFunctionChart::SetColorTransferFunction(vtkDiscretiz
   AddPlot(compositeHiddenItem);
   AddPlot(controlPoints);
 
-  minPlot->Modified();
-  maxPlot->Modified();
-  minDataPlot->Modified();
-  maxDataPlot->Modified();
-
   //Disable zooming
   this->SetActionToButton(ZOOM, -1);
 }
@@ -188,7 +180,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     {
       ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
     }
-    minPlot->Modified();
+    //minPlot->Modified();
   }
   else if (rangeMoving == RangeMoving::MAX)
   {
@@ -207,10 +199,7 @@ void ctkVTKCompositeTransferFunctionChart::updateMarkerPosition(const vtkContext
     {
       ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
     }
-    maxPlot->Modified();
   }
-
-  this->Scene->SetDirty(true);
 
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }
@@ -330,10 +319,6 @@ void ctkVTKCompositeTransferFunctionChart::SetCurrentRange(double min, double ma
   {
     ctk::remapColorScale(workingFunction, currentRange[0], currentRange[1]);
   }
-  minPlot->Modified();
-  maxPlot->Modified();
-
-  this->Scene->SetDirty(true);
 
   this->InvokeEvent(vtkCommand::CursorChangedEvent);
 }

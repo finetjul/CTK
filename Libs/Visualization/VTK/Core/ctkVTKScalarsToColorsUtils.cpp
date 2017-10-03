@@ -82,7 +82,7 @@ void ctk::remapColorScale(vtkDiscretizableColorTransferFunction* colorTransferFu
   }
   //  rescaledColorTransferFunction->SetDiscretize(colorTransferFunction->GetDiscretize());
   //  rescaledColorTransferFunction->SetNumberOfValues(colorTransferFunction->GetNumberOfValues());
-  //  rescaledColorTransferFunction->SetEnableModifiedEvents(true);
+    //rescaledColorTransferFunction->SetEnableModifiedEvents(true);
   rescaledColorTransferFunction->Build();
 }
 

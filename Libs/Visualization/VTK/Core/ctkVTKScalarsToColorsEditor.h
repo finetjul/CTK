@@ -47,11 +47,11 @@ public:
   vtkTypeMacro(ctkVTKScalarsToColorsEditor, vtkAbstractContextItem)
   static ctkVTKScalarsToColorsEditor* New();
 
-  void SetColorTransfertFunction(vtkScalarsToColors* ctf);
-  vtkSmartPointer<vtkScalarsToColors> GetColorTransfertFunction();
+  void SetColorTransferFunction(vtkScalarsToColors* ctf);
+  vtkSmartPointer<vtkScalarsToColors> GetColorTransferFunction();
 
-  void SetDiscretizableColorTransfertFunction(vtkDiscretizableColorTransferFunction* dctf);
-  vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetDiscretizableColorTransfertFunction();
+  void SetDiscretizableColorTransferFunction(vtkDiscretizableColorTransferFunction* dctf);
+  vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetDiscretizableColorTransferFunction();
 
   void SetHistogramTable(vtkTable* table, const char* xAxisColumn, const char* yAxisColumn);
 

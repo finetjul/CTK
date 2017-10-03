@@ -77,13 +77,7 @@ public:
   vtkSmartPointer<vtkContextView> histogramView;
   vtkSmartPointer<vtkEventQtSlotConnect> eventLink;
 
-  vtkSmartPointer<vtkScalarsToColors> colorTransferFunction;
-
   vtkSmartPointer<vtkTable> histogramTable;
-
-  vtkPiecewiseFunction* scalarOpacityFunction;
-
-  QToolButton* gradientOpacityButton;
 
   //Option part
   QToolButton* nanButton;
@@ -94,11 +88,10 @@ public:
   double dataRange[2];
   double dataMean;
 
-  double opacitySliderValue;
+  double previousOpacityValue;
 
-  vtkSmartPointer<vtkCallbackCommand> rangeModifiedCallBack;
-
-  static void onHistogramRangeValuesChanged(vtkObject *caller, unsigned long eid,
+  vtkSmartPointer<vtkCallbackCommand> colorTransferFunctionModified;
+  static void colorTransferFunctionModifiedCallback(vtkObject *caller, unsigned long eid,
     void *clientdata, void *calldata);
 };
 
@@ -108,8 +101,6 @@ ctkVTKDiscretizableColorTransferWidgetPrivate
   : q_ptr(&object)
 {
   this->scalarsToColorsSelector = nullptr;
-  this->scalarOpacityFunction = nullptr;
-  this->gradientOpacityButton = nullptr;
 
   //Option part
   this->nanButton = nullptr;
@@ -120,27 +111,11 @@ ctkVTKDiscretizableColorTransferWidgetPrivate
   this->dataRange[1] = VTK_DOUBLE_MIN;
   this->dataMean = 0.;
 
-  this->opacitySliderValue = 0.;
+  this->previousOpacityValue = 0.;
 
-  rangeModifiedCallBack = vtkSmartPointer<vtkCallbackCommand>::New();
-  rangeModifiedCallBack->SetClientData(this);
-  rangeModifiedCallBack->SetCallback(this->onHistogramRangeValuesChanged);
-}
-
-void ctkVTKDiscretizableColorTransferWidgetPrivate::onHistogramRangeValuesChanged(vtkObject *caller, unsigned long eid,
-  void *clientData, void *callData)
-{
-  if (eid != vtkCommand::CursorChangedEvent)
-  {
-    return;
-  }
-
-  ctkVTKDiscretizableColorTransferWidgetPrivate* Self =
-    reinterpret_cast<ctkVTKDiscretizableColorTransferWidgetPrivate*>(clientData);
-
-  double* newRange = Self->scalarsToColorsEditor->GetCurrentRange();
-  Self->rangeSlider->setMinimumValue(newRange[0]);
-  Self->rangeSlider->setMaximumValue(newRange[1]);
+  colorTransferFunctionModified = vtkSmartPointer<vtkCallbackCommand>::New();
+  colorTransferFunctionModified->SetClientData(this);
+  colorTransferFunctionModified->SetCallback(this->colorTransferFunctionModifiedCallback);
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +137,7 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   this->histogramView->GetRenderer()->SetBackground(
     ctkVTKScalarsToColorsEditor::BACKGROUND_COLOR);
 
-  this->opacitySliderValue = opacitySlider->value();
+  this->previousOpacityValue = opacitySlider->value();
 
   this->scalarsToColorsSelector->addScalarsToColors(nullptr, q->tr("Reset"));
   this->scalarsToColorsSelector->setCurrentIndex(-1);
@@ -172,20 +147,18 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   eventLink->Connect(scalarsToColorsEditor.Get(), vtkControlPointsItem::CurrentPointChangedEvent,
     q, SLOT(onCurrentPointChanged()));
 
-  scalarsToColorsEditor->AddObserver(vtkCommand::CursorChangedEvent, rangeModifiedCallBack.Get());
-
   QObject::connect(scalarsToColorsSelector, SIGNAL(currentScalarsToColorsChanged(vtkScalarsToColors*)),
     q, SLOT(onPaletteIndexChanged(vtkScalarsToColors*)));
 
-  QObject::connect(opacitySlider, SIGNAL(valueChanged(double)), q, SLOT(onGlobalOpacitySliderValueChanged(double)));
+  QObject::connect(opacitySlider, SIGNAL(valueChanged(double)), q, SLOT(setGlobalOpacity(double)));
 
-  QObject::connect(resetRangeButton, SIGNAL(clicked()), q, SLOT(onResetRangeClicked()));
+  QObject::connect(resetRangeButton, SIGNAL(clicked()), q, SLOT(resetColorTransferFunctionRange()));
 
-  QObject::connect(centerRangeButton, SIGNAL(clicked()), q, SLOT(onCenterRangeClicked()));
+  QObject::connect(centerRangeButton, SIGNAL(clicked()), q, SLOT(centerColorTransferFunctionRange()));
 
-  QObject::connect(invertColorTransferFunctionButton, SIGNAL(clicked()), q, SLOT(onInvertClicked()));
+  QObject::connect(invertColorTransferFunctionButton, SIGNAL(clicked()), q, SLOT(invertColorTransferFunction()));
 
-  QObject::connect(rangeSlider, SIGNAL(valuesChanged(double, double)), q, SLOT(onRangeSliderValuesChanged(double, double)));
+  QObject::connect(rangeSlider, SIGNAL(valuesChanged(double, double)), q, SLOT(setColorTransferFunctionRange(double, double)));
 
   //option panel part
   optionPanel = new QWidget(q, Qt::Popup);
@@ -208,13 +181,15 @@ void ctkVTKDiscretizableColorTransferWidgetPrivate::setupUi(QWidget* widget)
   panelLayout->addWidget(discretizeCheck, 1, 0);
   panelLayout->addWidget(classesDiscret, 1, 1);
 
-  QObject::connect(optionButton, SIGNAL(clicked()), q, SLOT(onOptionButtonClicked()));
+  QObject::connect(optionButton, SIGNAL(clicked()), q, SLOT(toggleOptionPanelVisibility()));
 
-  QObject::connect(nanButton, SIGNAL(clicked()), q, SLOT(onNaNButtonClicked()));
+  QObject::connect(nanButton, SIGNAL(clicked()), q, SLOT(setNaNColor()));
 
-  QObject::connect(discretizeCheck, SIGNAL(stateChanged(int)), q, SLOT(onDiscretizeCheckBoxStateChanged(int)));
+  QObject::connect(discretizeCheck, SIGNAL(toggled(bool)), q, SLOT(setDiscretize(bool)));
 
-  QObject::connect(classesDiscret, SIGNAL(valueChanged(int)), q, SLOT(onDiscreteClassesSpinBoxValueChanged(int)));
+  QObject::connect(classesDiscret, SIGNAL(valueChanged(int)), q, SLOT(setNumberOfDiscreteValues(int)));
+
+  QObject::connect(discretizeCheck, SIGNAL(toggled(bool)), classesDiscret, SLOT(setEnabled(bool)));
 }
 
 // ----------------------------------------------------------------------------
@@ -223,6 +198,44 @@ QIcon ctkVTKDiscretizableColorTransferWidgetPrivate::getColorIcon(const QColor& 
   QPixmap pix(32, 32);
   pix.fill(color);
   return QIcon(pix);
+}
+
+// ----------------------------------------------------------------------------
+void ctkVTKDiscretizableColorTransferWidgetPrivate::colorTransferFunctionModifiedCallback(vtkObject *caller, unsigned long eid,
+  void *clientdata, void *calldata)
+{
+  if (eid != vtkCommand::ModifiedEvent)
+  {
+    return;
+  }
+  ctkVTKDiscretizableColorTransferWidgetPrivate* self =
+    reinterpret_cast<ctkVTKDiscretizableColorTransferWidgetPrivate*>(clientdata);
+
+  vtkSmartPointer<vtkDiscretizableColorTransferFunction> dctf =
+    self->scalarsToColorsEditor->GetDiscretizableColorTransferFunction();
+
+  if (dctf->GetDiscretize())
+  {
+    dctf->Build();
+  }
+
+  self->discretizeCheck->setChecked(dctf->GetDiscretize());
+
+  if (dctf->GetDiscretize())
+  {
+    self->classesDiscret->setValue(dctf->GetNumberOfValues());
+  }
+
+  double* newRange = self->scalarsToColorsEditor->GetCurrentRange();
+  self->rangeSlider->setValues(newRange[0], newRange[1]);
+
+  double r, g, b;
+  self->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->GetNanColor(r, g, b);
+  QColor selected = QColor::fromRgbF(r, g, b);
+  self->nanButton->setIcon(self->getColorIcon(selected));
+
+  //TODO: fix remapColorScale
+  //self->scalarsToColorsView->GetInteractor()->Render();
 }
 
 // ----------------------------------------------------------------------------
@@ -240,22 +253,57 @@ ctkVTKDiscretizableColorTransferWidget::~ctkVTKDiscretizableColorTransferWidget(
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::setColorTransferFunction(vtkScalarsToColors* ctf)
+void ctkVTKDiscretizableColorTransferWidget::setColorTransferFunction(
+  vtkScalarsToColors* ctf)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
-  d->colorTransferFunction = ctf;
-  d->scalarsToColorsEditor->SetColorTransfertFunction(ctf);
+
+  vtkScalarsToColors* oldCtf = d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction();
+  if (oldCtf != nullptr)
+  {
+    oldCtf->RemoveObserver(d->colorTransferFunctionModified);
+  }
+
+  //Setting the transfer function to the scalarsToColorsEditor results
+  // in converting ctf to a vtkDiscretizableTransferFunction
+  d->scalarsToColorsEditor->SetColorTransferFunction(ctf);
+
+  ctf = d->scalarsToColorsEditor->GetColorTransferFunction();
+  emit(currentScalarsToColorsChanged(ctf));
 
   if (ctf == nullptr)
   {
-    d->rangeSlider->setRange(0., 0.);
-    d->rangeSlider->setValues(0., 0.);
+    d->rangeSlider->setRange(0., 255.);
+    d->rangeSlider->setValues(0., 1.);
+    d->rangeSlider->setEnabled(false);
+    d->previousOpacityValue = 0.0;
+    d->opacitySlider->setValue(d->previousOpacityValue);
+    d->opacitySlider->setEnabled(false);
+    d->optionButton->setEnabled(false);
+    d->resetRangeButton->setEnabled(false);
+    d->centerRangeButton->setEnabled(false);
+    d->invertColorTransferFunctionButton->setEnabled(false);
     return;
   }
 
-  double* newRange = d->scalarsToColorsEditor->GetColorTransfertFunction()->GetRange();
+  // Set sliders values depending on the new color transfer function
+  d->rangeSlider->setEnabled(true);
+  d->opacitySlider->setEnabled(true);
+  d->optionButton->setEnabled(true);
+  d->resetRangeButton->setEnabled(true);
+  d->centerRangeButton->setEnabled(true);
+  d->invertColorTransferFunctionButton->setEnabled(true);
+
+  double* newRange =
+    d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->GetRange();
   d->rangeSlider->setRange(newRange[0], newRange[1]);
-  d->rangeSlider->setValues(newRange[0], newRange[1]);
+
+  d->previousOpacityValue = 1.0;
+  d->opacitySlider->setValue(d->previousOpacityValue);
+
+  ctf->AddObserver(
+    vtkCommand::ModifiedEvent, d->colorTransferFunctionModified);
+  d->colorTransferFunctionModified->Execute(ctf, vtkCommand::ModifiedEvent, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -263,7 +311,6 @@ void ctkVTKDiscretizableColorTransferWidget::setHistogram(vtkImageAccumulate* hi
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
   histogram->Update();
-
   d->dataRange[0] = histogram->GetMin()[0];
   d->dataRange[1] = histogram->GetMax()[0];
   d->dataMean = histogram->GetMean()[0];
@@ -303,28 +350,20 @@ void ctkVTKDiscretizableColorTransferWidget::setHistogram(vtkImageAccumulate* hi
 void ctkVTKDiscretizableColorTransferWidget::onPaletteIndexChanged(vtkScalarsToColors* ctf)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
-  //Setting the transfer function to the scalarsToColorsEditor results
-  // in converting ctf to a vtkDiscretizableTransferFunction
-  d->scalarsToColorsEditor->SetColorTransfertFunction(ctf);
 
-  //emit signal after the conversion
-  emit(currentScalarsToColorsChanged(d->scalarsToColorsEditor->GetColorTransfertFunction()));
-
-  //Update rendering
-  d->scalarsToColorsView->GetInteractor()->Render();
+  this->setColorTransferFunction(ctf);
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onGlobalOpacitySliderValueChanged(double value)
+void ctkVTKDiscretizableColorTransferWidget::setGlobalOpacity(double value)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
-  d->scalarsToColorsEditor->SetGlobalOpacity(value/d->opacitySliderValue);
-  d->opacitySliderValue = value;
-  d->scalarsToColorsView->GetInteractor()->Render();
+  d->scalarsToColorsEditor->SetGlobalOpacity(value/d->previousOpacityValue);
+  d->previousOpacityValue = value;
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onOptionButtonClicked()
+void ctkVTKDiscretizableColorTransferWidget::toggleOptionPanelVisibility()
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
 
@@ -334,60 +373,46 @@ void ctkVTKDiscretizableColorTransferWidget::onOptionButtonClicked()
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onNaNButtonClicked()
+void ctkVTKDiscretizableColorTransferWidget::setNaNColor()
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
 
-  if (d->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction() == nullptr)
+  if (d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction() == nullptr)
   {
     d->nanButton->setIcon(d->getColorIcon(QColor(0, 0, 0, 0)));
     return;
   }
 
   double r, g, b;
-  d->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->GetNanColor(r, g, b);
+  d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->GetNanColor(r, g, b);
   QColor selected = QColorDialog::getColor(QColor(255 * r, 255 * g, 255 * b, 255),
     d->optionPanel, "Select NaN values color", QColorDialog::DontUseNativeDialog);
   d->nanButton->setIcon(d->getColorIcon(selected));
-  d->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetNanColor(
+  d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->SetNanColor(
     selected.redF(), selected.greenF(), selected.blueF());
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onDiscretizeCheckBoxStateChanged(int state)
+void ctkVTKDiscretizableColorTransferWidget::setDiscretize(bool checked)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
 
-  if (d->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction() == nullptr)
-  {
-    d->classesDiscret->setValue(0);
-    d->classesDiscret->setEnabled(false);
-    return;
-  }
-
-  d->classesDiscret->setEnabled(state == Qt::Checked);
-  d->classesDiscret->setValue(d->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->GetNumberOfValues());
-  d->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetDiscretize(state == Qt::Checked);
-
-  d->scalarsToColorsView->GetInteractor()->Render();
+  d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->SetDiscretize(checked);
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onDiscreteClassesSpinBoxValueChanged(int value)
+void ctkVTKDiscretizableColorTransferWidget::setNumberOfDiscreteValues(int value)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
-
-  d->scalarsToColorsEditor->GetDiscretizableColorTransfertFunction()->SetNumberOfValues(value);
-  d->scalarsToColorsView->GetInteractor()->Render();
+  d->scalarsToColorsEditor->GetDiscretizableColorTransferFunction()->SetNumberOfValues(value);
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onRangeSliderValuesChanged(double minValue, double maxValue)
+void ctkVTKDiscretizableColorTransferWidget::setColorTransferFunctionRange(double minValue, double maxValue)
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
 
   d->scalarsToColorsEditor->SetCurrentRange(minValue, maxValue);
-  d->scalarsToColorsView->GetInteractor()->Render();
 }
 
 
@@ -411,7 +436,6 @@ void ctkVTKDiscretizableColorTransferWidget::onCurrentPointEdit()
       rgb[1] = color.greenF();
       rgb[2] = color.blueF();
       d->scalarsToColorsEditor->SetCurrentControlPointColor(rgb);
-      d->scalarsToColorsView->GetInteractor()->Render();
     }
   }
 }
@@ -423,7 +447,7 @@ void ctkVTKDiscretizableColorTransferWidget::onCurrentPointModified()
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onResetRangeClicked()
+void ctkVTKDiscretizableColorTransferWidget::resetColorTransferFunctionRange()
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
   if (d->dataRange[0] <= d->dataRange[1])
@@ -433,19 +457,17 @@ void ctkVTKDiscretizableColorTransferWidget::onResetRangeClicked()
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onCenterRangeClicked()
+void ctkVTKDiscretizableColorTransferWidget::centerColorTransferFunctionRange()
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
   d->scalarsToColorsEditor->CenterRange(d->dataMean);
-  d->scalarsToColorsView->GetInteractor()->Render();
 }
 
 // ----------------------------------------------------------------------------
-void ctkVTKDiscretizableColorTransferWidget::onInvertClicked()
+void ctkVTKDiscretizableColorTransferWidget::invertColorTransferFunction()
 {
   Q_D(ctkVTKDiscretizableColorTransferWidget);
   d->scalarsToColorsEditor->InvertColorTransferFunction();
-  d->scalarsToColorsView->GetInteractor()->Render();
 }
 
 

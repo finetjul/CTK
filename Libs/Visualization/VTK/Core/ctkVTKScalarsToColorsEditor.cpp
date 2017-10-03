@@ -78,27 +78,17 @@ ctkVTKScalarsToColorsEditor::ctkVTKScalarsToColorsEditor()
   histogramChart->SetScalarVisibility(true);
   AddItem(histogramChart.GetPointer());
 
-  //Preview
-  previewChart = vtkSmartPointer<ctkVTKScalarsToColorsPreviewChart>::New();
-  AddItem(previewChart.GetPointer());
-
   //Editor 
   overlayChart = vtkSmartPointer<ctkVTKCompositeTransferFunctionChart>::New();
   overlayChart->SetBackgroundBrush(b);
   AddItem(overlayChart.GetPointer());
 
-  this->SetColorTransfertFunction(colorTransferFunction);
+  //Preview
+  previewChart = vtkSmartPointer<ctkVTKScalarsToColorsPreviewChart>::New();
+  AddItem(previewChart.GetPointer());
 
+  this->SetColorTransferFunction(nullptr);
 
-  //------------------------------------------------------------------------------------
-  //Add observers
-  vtkSmartPointer<vtkCompositeControlPointsItem> controlPoints =
-    overlayChart->GetControlPointsItem();
-
-  controlPoints->AddObserver(vtkControlPointsItem::CurrentPointChangedEvent,
-    this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
-  controlPoints->AddObserver(vtkControlPointsItem::CurrentPointEditEvent,
-    this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
 }
 
 ctkVTKScalarsToColorsEditor::~ctkVTKScalarsToColorsEditor()
@@ -107,18 +97,18 @@ ctkVTKScalarsToColorsEditor::~ctkVTKScalarsToColorsEditor()
 }
 
 
-void ctkVTKScalarsToColorsEditor::SetColorTransfertFunction(
+void ctkVTKScalarsToColorsEditor::SetColorTransferFunction(
   vtkScalarsToColors* ctf)
 {
   if(ctf == nullptr)
   {
-    this->SetDiscretizableColorTransfertFunction(nullptr);
+    this->SetDiscretizableColorTransferFunction(nullptr);
     return;
   }
 
   if (ctf->IsA("vtkDiscretizableColorTransferFunction"))
   {
-    this->SetDiscretizableColorTransfertFunction(
+    this->SetDiscretizableColorTransferFunction(
       vtkDiscretizableColorTransferFunction::SafeDownCast(ctf));
   }
   else if (ctf->IsA("vtkColorTransferFunction"))
@@ -137,13 +127,22 @@ void ctkVTKScalarsToColorsEditor::SetColorTransfertFunction(
     dctf->SetScalarOpacityFunction(opacityFunction);
     dctf->EnableOpacityMappingOn();
 
-    this->SetDiscretizableColorTransfertFunction(dctf);
+    this->SetDiscretizableColorTransferFunction(dctf);
   }
 }
 
-void ctkVTKScalarsToColorsEditor::SetDiscretizableColorTransfertFunction(
+void ctkVTKScalarsToColorsEditor::SetDiscretizableColorTransferFunction(
   vtkDiscretizableColorTransferFunction* colorTransfer)
 {
+  vtkSmartPointer<vtkCompositeControlPointsItem> oldControlPoints =
+    overlayChart->GetControlPointsItem();
+
+  if (oldControlPoints != nullptr)
+  {
+    oldControlPoints->RemoveObservers(vtkControlPointsItem::CurrentPointChangedEvent);
+    oldControlPoints->RemoveObservers(vtkControlPointsItem::CurrentPointEditEvent);
+  }
+
   colorTransferFunction = colorTransfer;
 
   overlayChart->SetColorTransferFunction(colorTransferFunction);
@@ -159,18 +158,15 @@ void ctkVTKScalarsToColorsEditor::SetDiscretizableColorTransfertFunction(
     this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
   controlPoints->AddObserver(vtkControlPointsItem::CurrentPointEditEvent,
     this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
-
-  overlayChart->AddObserver(vtkCommand::CursorChangedEvent,
-    this->PrivateEventForwarder, &EventForwarder::ForwardEvent);
 }
 
-vtkSmartPointer<vtkScalarsToColors> ctkVTKScalarsToColorsEditor::GetColorTransfertFunction()
+vtkSmartPointer<vtkScalarsToColors> ctkVTKScalarsToColorsEditor::GetColorTransferFunction()
 {
   return colorTransferFunction;
 }
 
 vtkSmartPointer<vtkDiscretizableColorTransferFunction>
-  ctkVTKScalarsToColorsEditor::GetDiscretizableColorTransfertFunction()
+  ctkVTKScalarsToColorsEditor::GetDiscretizableColorTransferFunction()
 {
   return colorTransferFunction;
 }
@@ -230,10 +226,12 @@ bool ctkVTKScalarsToColorsEditor::Paint(vtkContext2D* painter)
     // Update the geometry size cache
     this->LastSceneSize.Set(sceneWidth, sceneHeight);
 
-    float colorBarThickness = 19;
-    vtkRectf colorTransferFunctionChartSize(0.0, -colorBarThickness, sceneWidth,
-      40 + colorBarThickness);
+    float colorBarThickness = 20;
+    vtkRectf colorTransferFunctionChartSize(0.0, 0.0, sceneWidth,
+     colorBarThickness);
+
     previewChart->SetSize(colorTransferFunctionChartSize);
+    previewChart->SetHiddenAxisBorder(0);
     previewChart->RecalculateBounds();
   }
 

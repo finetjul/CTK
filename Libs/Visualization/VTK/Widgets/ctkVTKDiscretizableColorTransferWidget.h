@@ -51,30 +51,26 @@ public:
   void setHistogram(vtkImageAccumulate* hist);
 
 signals:
-  void dynamicChanged(double min, double max);
-  void toogleVolumeRendering(bool enable);
-
   void currentScalarsToColorsModified();
   void currentScalarsToColorsChanged(vtkScalarsToColors* ctf);
 
 public slots:
-  void onGlobalOpacitySliderValueChanged(double opacity);
-
   void onCurrentPointChanged();
   void onCurrentPointEdit();
   void onCurrentPointModified();
-
-  void onResetRangeClicked();
-  void onCenterRangeClicked();
-  void onInvertClicked();
-
   void onPaletteIndexChanged(vtkScalarsToColors* ctf);
 
-  void onOptionButtonClicked();
-  void onNaNButtonClicked();
-  void onDiscretizeCheckBoxStateChanged(int state);
-  void onDiscreteClassesSpinBoxValueChanged(int value);
-  void onRangeSliderValuesChanged(double minValue, double maxValue);
+  void setGlobalOpacity(double opacity);
+
+  void resetColorTransferFunctionRange();
+  void centerColorTransferFunctionRange();
+  void invertColorTransferFunction();
+
+  void toggleOptionPanelVisibility();
+  void setNaNColor();
+  void setDiscretize(bool checked);
+  void setNumberOfDiscreteValues(int value);
+  void setColorTransferFunctionRange(double minValue, double maxValue);
 
 protected:
   QScopedPointer<ctkVTKDiscretizableColorTransferWidgetPrivate> d_ptr;
